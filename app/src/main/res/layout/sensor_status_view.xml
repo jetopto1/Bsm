@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="9">
+
+
+    <ImageView
+        android:id="@+id/emergent"
+        android:layout_width="match_parent"
+        android:layout_height="01dp"
+        android:layout_weight="3"
+        android:background="@drawable/emergent_selector"
+        android:contentDescription="@string/description_emergent" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/background_dark"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/urgent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:background="@drawable/urgent_selector"
+        android:contentDescription="@string/description_urgent" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@android:color/background_dark"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/safety"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:background="@drawable/safety_selector"
+        android:contentDescription="@string/description_safety" />
+
+</LinearLayout>
