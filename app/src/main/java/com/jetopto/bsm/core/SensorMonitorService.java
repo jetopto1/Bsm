@@ -240,43 +240,46 @@ public class SensorMonitorService extends Service {
     }
 
     private BluetoothAdapter.LeScanCallback mLeScanCallback =
-            (bluetoothDevice, rssi, scanRecord) -> {
+            new BluetoothAdapter.LeScanCallback() {
+                @Override
+                public void onLeScan(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
 
-                if (scanIndex == MaxDeviceCount) scanIndex = 0;
+                    if (scanIndex == MaxDeviceCount) scanIndex = 0;
 
-                if (bluetoothDevice.getAddress().equals((BLE_MAC))) {
+                    if (bluetoothDevice.getAddress().equals((BLE_MAC))) {
 
-                    final String deviceName = bluetoothDevice.getName();
-                    scanDevice[scanIndex] = new deviceInfo();
-                    if (deviceName != null && deviceName.length() > 0) {
-                        scanDevice[scanIndex].Name = deviceName;
-                    } else {
-                        scanDevice[scanIndex].Name = "unknown device";
+                        final String deviceName = bluetoothDevice.getName();
+                        scanDevice[scanIndex] = new deviceInfo();
+                        if (deviceName != null && deviceName.length() > 0) {
+                            scanDevice[scanIndex].Name = deviceName;
+                        } else {
+                            scanDevice[scanIndex].Name = "unknown device";
+                        }
+                        scanDevice[scanIndex].Address = bluetoothDevice.getAddress();
+                        scanDevice[scanIndex].RSSI = rssi;
+                        scanDevice[scanIndex].Type = bluetoothDevice.getType();
+                        scanDevice[scanIndex].BondState = bluetoothDevice.getBondState();
+
+                        // Search for actual packet length
+                        int packetLength = 0;
+                        while (scanRecord[packetLength] > 0 && packetLength < scanRecord.length) {
+                            packetLength += scanRecord[packetLength] + 1;
+                        }
+                        scanDevice[scanIndex].scanRecord = new byte[packetLength];
+                        System.arraycopy(scanRecord, 0, scanDevice[scanIndex].scanRecord, 0, packetLength);
+                        Log.d(TAG, String.format("*** Scan Index=%d, Name=%s, Address=%s, RSSI=%d, scan result length=%d",
+                                scanIndex, scanDevice[scanIndex].Name, scanDevice[scanIndex].Address, scanDevice[scanIndex].RSSI, packetLength));
+
+                        //Parsing BSM UUID
+                        if (/*scanDevice[scanIndex].Name.equals(BLE_NAME) && */scanDevice[scanIndex].Address.equals(BLE_MAC)) {
+                            Log.d(TAG, "Detect BSM iBecon !!");
+                            SensorMonitorService.this.BsmDataParsing(scanIndex);
+                        }
+
+                        scanIndex++;
                     }
-                    scanDevice[scanIndex].Address = bluetoothDevice.getAddress();
-                    scanDevice[scanIndex].RSSI = rssi;
-                    scanDevice[scanIndex].Type = bluetoothDevice.getType();
-                    scanDevice[scanIndex].BondState = bluetoothDevice.getBondState();
 
-                    // Search for actual packet length
-                    int packetLength = 0;
-                    while (scanRecord[packetLength] > 0 && packetLength < scanRecord.length) {
-                        packetLength += scanRecord[packetLength] + 1;
-                    }
-                    scanDevice[scanIndex].scanRecord = new byte[packetLength];
-                    System.arraycopy(scanRecord, 0, scanDevice[scanIndex].scanRecord, 0, packetLength);
-                    Log.d(TAG, String.format("*** Scan Index=%d, Name=%s, Address=%s, RSSI=%d, scan result length=%d",
-                            scanIndex, scanDevice[scanIndex].Name, scanDevice[scanIndex].Address, scanDevice[scanIndex].RSSI, packetLength));
-
-                    //Parsing BSM UUID
-                    if (/*scanDevice[scanIndex].Name.equals(BLE_NAME) && */scanDevice[scanIndex].Address.equals(BLE_MAC)) {
-                        Log.d(TAG, "Detect BSM iBecon !!");
-                        BsmDataParsing(scanIndex);
-                    }
-
-                    scanIndex++;
                 }
-
             };
 
     private void BsmDataParsing(int i) {
