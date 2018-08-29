@@ -46,7 +46,7 @@ public class MainPresenterImpl implements IBasePresenter<MainMvpView>, ISensorSt
     public void onServiceConnected(ComponentName name, IBinder service) {
         mService = ((SensorMonitorService.SensorMonitorBinder) service).getService();
         mService.registerListener(this);
-        mService.monitorSensor();
+       // mService.monitorSensor();
     }
 
     @Override

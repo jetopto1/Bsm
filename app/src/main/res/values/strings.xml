@@ -3,4 +3,8 @@
     <string name="description_emergent">Emergent</string>
     <string name="description_urgent">Urgent</string>
     <string name="description_safety">Safety</string>
+    <string name="bt_admin_permission_get">BT admin permission granted</string>
+    <string name="bt_admin_permission_failed">BT admin permission not granted</string>
+    <string name="location_permission_get">Location permission granted</string>
+    <string name="location_permission_failed">Locatuon permission not granted</string>
 </resources>
