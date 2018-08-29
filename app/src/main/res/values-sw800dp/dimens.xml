@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--  The base dimension is sw800dp -->
 <resources>
     <dimen name="sensor_status_width">80dp</dimen>
     <dimen name="category_gridview_padding_edge">10dp</dimen>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_label_name">
+        <item>Map</item>
+        <item>Dashboard</item>
+        <item>Contact</item>
+        <item>Settings</item>
+    </string-array>
+
+    <string-array name="category_icon">
+        <item>@drawable/ic_map</item>
+        <item>@drawable/ic_dashboard</item>
+        <item>@drawable/ic_contact</item>
+        <item>@drawable/ic_setting</item>
+    </string-array>
+</resources>
