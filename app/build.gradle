@@ -16,10 +16,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
 
 dependencies {
@@ -35,3 +31,14 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation 'com.android.support:support-v4:27.1.1'
 }
+
+task dimensionPrebuildTask(type: Exec) {
+    println "here's a task"
+    executable 'bash'
+    workingDir "$projectDir"
+    args '-c', './dimen_gen.sh ./src/main/res/values-sw800dp/dimens.xml'
+    ignoreExitValue true
+}
+
+preBuild.dependsOn dimensionPrebuildTask
+

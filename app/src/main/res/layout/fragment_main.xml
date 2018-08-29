@@ -3,4 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <GridView
+        android:id="@+id/grid_category"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/category_margin_edge"
+        android:gravity="center"
+        android:paddingTop="@dimen/category_gridview_padding_edge"
+        android:layout_gravity="center_vertical"
+        android:horizontalSpacing="10dp"
+        android:numColumns="2"
+        android:verticalSpacing="10dp">
+
+    </GridView>
 </android.support.constraint.ConstraintLayout>
