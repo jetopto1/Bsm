@@ -28,7 +28,7 @@ import com.jetopto.bsm.utils.Constant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements MainMvpView {
+public class MainActivity extends FragmentActivity implements MainMvpView, CategoryFragment.OnCategoryClick {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private Intent beaconScanIntent;
@@ -103,7 +103,6 @@ public class MainActivity extends FragmentActivity implements MainMvpView {
     @Override
     public void onSensorStateChanged(Bundle bundle) {
         //TODO resolve sensor level
-        Log.d(TAG, "bundle" + bundle);
         if (null != bundle) {
             mRightView.updateSensorLevel(bundle.getString(Constant.RIGHT_SENSOR_LEVEL));
             mLeftView.updateSensorLevel(bundle.getString(Constant.LEFT_SENSOR_LEVEL));
@@ -118,6 +117,21 @@ public class MainActivity extends FragmentActivity implements MainMvpView {
     @Override
     public void hideProgress() {
 
+    }
+
+    @Override
+    public void onClick(int id) {
+        Log.d(TAG, "resource id: " + id);
+        switch (id) {
+            case R.drawable.ic_map:
+            break;
+            case R.drawable.ic_dashboard:
+            break;
+            case R.drawable.ic_contact:
+            break;
+            case R.drawable.ic_setting:
+            break;
+        }
     }
 
     private void initView() {
