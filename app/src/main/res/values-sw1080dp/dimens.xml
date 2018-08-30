@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="sensor_status_width">108.00dp</dimen>
-    <dimen name="category_gridview_padding_edge">13.50dp</dimen>
-    <dimen name="category_margin_edge">13.50dp</dimen>
-    <dimen name="category_icon_width">405.00dp</dimen>
-    <dimen name="category_icon_height">405.00dp</dimen>
+    <dimen name="sensor_status_width">105.00dp</dimen>
+    <dimen name="category_gridview_padding_edge">18.00dp</dimen>
+    <dimen name="category_margin_edge">18.00dp</dimen>
+    <dimen name="category_icon_width">300.00dp</dimen>
+    <dimen name="category_icon_height">300.00dp</dimen>
 </resources>

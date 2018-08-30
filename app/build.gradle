@@ -16,6 +16,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    buildToolsVersion '27.0.3'
 }
 
 dependencies {
@@ -36,7 +37,7 @@ task dimensionPrebuildTask(type: Exec) {
     println "here's a task"
     executable 'bash'
     workingDir "$projectDir"
-    args '-c', './dimen_gen.sh ./src/main/res/values-sw800dp/dimens.xml'
+    args '-c', './dimen_gen.sh ./src/main/res/values-sw360dp/dimens.xml'
     ignoreExitValue true
 }
 
