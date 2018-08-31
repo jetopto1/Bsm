@@ -44,6 +44,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(13);
         googleMap.animateCamera(zoom);
+        googleMap.setMyLocationEnabled(true);
     }
 
 
