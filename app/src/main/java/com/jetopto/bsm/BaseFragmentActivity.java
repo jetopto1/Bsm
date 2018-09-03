@@ -1,0 +1,54 @@
+package com.jetopto.bsm;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+
+import com.google.android.gms.common.util.ArrayUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
+
+public abstract class BaseFragmentActivity extends FragmentActivity implements
+        ActivityCompat.OnRequestPermissionsResultCallback {
+
+    private static final String TAG = BaseFragmentActivity.class.getSimpleName();
+    protected final int REQUEST_PERMISSION_LOCATION = 98;
+    protected final int REQUEST_PERMISSION_BLUETOOTH = 99;
+    protected final int REQUEST_PERMISSION_CONTACT = 100;
+    protected final int REQUEST_PERMISSION_PHONE_CALL = 101;
+    protected final int REQUEST_PERMISSION_ALL = 1206;
+
+    protected final String[] LOCATION_PERMISSIONS = new String[]{
+            Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+    protected final String[] BLUETOOTH_PERMISSIONS = new String[]{Manifest.permission.BLUETOOTH_ADMIN};
+
+    protected final String[] CONTACTS_PERMISSIONS = new String[]{Manifest.permission.READ_CONTACTS};
+
+    protected final String[] CALL_PHONE_PERMISSIONS = new String[]{Manifest.permission.CALL_PHONE};
+
+    protected void requestAllPermissions() {
+        String[] array = ArrayUtils.concat(LOCATION_PERMISSIONS, BLUETOOTH_PERMISSIONS,
+                CONTACTS_PERMISSIONS, CALL_PHONE_PERMISSIONS);
+        requestRunTimePermission(this, array, REQUEST_PERMISSION_ALL);
+    }
+
+    protected void requestRunTimePermission(final Activity activity, final String[] permissions,
+                                            final int requestCode) {
+        ActivityCompat.requestPermissions(activity, permissions, requestCode);
+    }
+
+    protected boolean checkPermission(String permission) {
+        return PackageManager.PERMISSION_GRANTED ==
+                ContextCompat.checkSelfPermission(getApplicationContext(), permission);
+    }
+}

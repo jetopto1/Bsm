@@ -1,5 +1,6 @@
 package com.jetopto.bsm.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,6 +37,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMapReady(GoogleMap googleMap) {
         LatLng latLng = new LatLng(1.289545, 103.849972);
