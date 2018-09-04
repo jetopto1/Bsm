@@ -8,9 +8,9 @@
     </string-array>
 
     <string-array name="category_icon">
-        <item>@drawable/ic_map</item>
-        <item>@drawable/ic_dashboard</item>
-        <item>@drawable/ic_contact</item>
-        <item>@drawable/ic_setting</item>
+        <item>@drawable/map_selector</item>
+        <item>@drawable/dashboard_selector</item>
+        <item>@drawable/contact_selector</item>
+        <item>@drawable/setting_selector</item>
     </string-array>
 </resources>

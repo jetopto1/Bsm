@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jetopto.bsm">
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +18,7 @@
         android:theme="@style/NoActionBar">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyATwqwqj7RCnbU-t2saUOtdNAFdM7HyIRI"/>
+            android:value="AIzaSyATwqwqj7RCnbU-t2saUOtdNAFdM7HyIRI" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape">

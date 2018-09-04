@@ -1,24 +1,23 @@
 package com.jetopto.bsm;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.jetopto.bsm.core.SensorMonitorService;
 import com.jetopto.bsm.custom.view.SensorLevelView;
 import com.jetopto.bsm.fragment.CategoryFragment;
+import com.jetopto.bsm.fragment.ContactsFragment;
 import com.jetopto.bsm.fragment.MapFragment;
 import com.jetopto.bsm.presenter.MainPresenterImpl;
 import com.jetopto.bsm.presenter.interfaces.IBasePresenter;
@@ -28,12 +27,9 @@ import com.jetopto.bsm.utils.Constant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity implements MainMvpView, CategoryFragment.OnCategoryClick {
+public class MainActivity extends BaseFragmentActivity implements MainMvpView, CategoryFragment.OnCategoryClick {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Intent beaconScanIntent;
-    public static final int BSM_PERMISSIONN_REQUEST_LOCATION = 99;
-    public static final int BSM_PERMISSIONN_REQUEST_BLUETOOTH = 98;
 
     SensorLevelView mLeftView;
     SensorLevelView mRightView;
@@ -47,44 +43,39 @@ public class MainActivity extends FragmentActivity implements MainMvpView, Categ
         setContentView(R.layout.activity_main);
         initView();
         mPresenter = new MainPresenterImpl();
-        mPresenter.attachView(getApplicationContext(),this);
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    BSM_PERMISSIONN_REQUEST_LOCATION
-            );
+        mPresenter.attachView(getApplicationContext(), this);
+        requestAllPermissions();
+        if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            requestRunTimePermission(this, LOCATION_PERMISSIONS , REQUEST_PERMISSION_LOCATION);
         } else {
             Toast.makeText(getBaseContext(), R.string.location_permission_get, Toast.LENGTH_SHORT).show();
         }
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) !=
-                PackageManager.PERMISSION_GRANTED) {
+        if (!checkPermission(Manifest.permission.BLUETOOTH_ADMIN)) {
 
-            Toast.makeText(getBaseContext(),R.string.bt_admin_permission_failed, Toast.LENGTH_LONG).show();
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{Manifest.permission.BLUETOOTH_ADMIN},
-                    BSM_PERMISSIONN_REQUEST_BLUETOOTH
-            );
+            Toast.makeText(getBaseContext(), R.string.bt_admin_permission_failed, Toast.LENGTH_LONG).show();
+            requestRunTimePermission(this, BLUETOOTH_PERMISSIONS , REQUEST_PERMISSION_BLUETOOTH);
         } else {
-            Toast.makeText(getBaseContext(),R.string.bt_admin_permission_get, Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_LONG).show();
         }
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !=
+                PackageManager.PERMISSION_GRANTED) {
+            requestRunTimePermission(this, CONTACTS_PERMISSIONS , REQUEST_PERMISSION_CONTACT);
+        } else {
+            Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_LONG).show();
+        }
 
         if (!getPackageManager().hasSystemFeature(getPackageManager().FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(getBaseContext(), "BLE not support", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getBaseContext(),"BLE supported", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(), "BLE supported", Toast.LENGTH_SHORT).show();
 
         }
 
 //        beaconScanIntent = new Intent(this, SensorMonitorService.class);
 //        this.startService(beaconScanIntent);
     }
-
 
 
     @Override
@@ -123,15 +114,23 @@ public class MainActivity extends FragmentActivity implements MainMvpView, Categ
     public void onClick(int id) {
         Log.d(TAG, "resource id: " + id);
         switch (id) {
-            case R.drawable.ic_map:
-            break;
-            case R.drawable.ic_dashboard:
-            break;
-            case R.drawable.ic_contact:
-            break;
-            case R.drawable.ic_setting:
-            break;
+            case R.drawable.map_selector:
+
+                break;
+            case R.drawable.dashboard_selector:
+                break;
+            case R.drawable.contact_selector:
+                showContactsFragment();
+                break;
+            case R.drawable.setting_selector:
+                break;
         }
+    }
+
+    private void showContactsFragment() {
+        ContactsFragment fragment = new ContactsFragment();
+        fragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+        fragment.show(getSupportFragmentManager(), "contacts");
     }
 
     private void initView() {
@@ -193,22 +192,33 @@ public class MainActivity extends FragmentActivity implements MainMvpView, Categ
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         switch (requestCode) {
-            case BSM_PERMISSIONN_REQUEST_LOCATION: {
+            case REQUEST_PERMISSION_LOCATION:
                 if (grantResults.length > 0 &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getBaseContext(),R.string.location_permission_get, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.location_permission_get, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(),R.string.location_permission_failed, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.location_permission_failed, Toast.LENGTH_SHORT).show();
                 }
-            }
-            case BSM_PERMISSIONN_REQUEST_BLUETOOTH: {
+                break;
+            case REQUEST_PERMISSION_BLUETOOTH:
                 if (grantResults.length > 0 &&
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getBaseContext(),R.string.bt_admin_permission_get, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(),R.string.bt_admin_permission_failed,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), R.string.bt_admin_permission_failed, Toast.LENGTH_SHORT).show();
                 }
-            }
+                break;
+            case REQUEST_PERMISSION_CONTACT:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), R.string.bt_admin_permission_failed, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_PERMISSION_ALL:
+                Log.i(TAG, "request permission all");
+                break;
         }
     }
 }
