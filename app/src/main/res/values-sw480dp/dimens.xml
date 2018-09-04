@@ -5,4 +5,11 @@
     <dimen name="category_margin_edge">7.98dp</dimen>
     <dimen name="category_icon_width">133.00dp</dimen>
     <dimen name="category_icon_height">133.00dp</dimen>
+
+    <dimen name="contact_icon_width">79.80dp</dimen>
+    <dimen name="contact_icon_height">79.80dp</dimen>
+    <dimen name="contact_phone_width">53.20dp</dimen>
+    <dimen name="contact_phone_height">53.20dp</dimen>
+    <dimen name="contact_margin_parent_horizontal">26.60dp</dimen>
+    <dimen name="contact_margin_thumb">13.30dp</dimen>
 </resources>
