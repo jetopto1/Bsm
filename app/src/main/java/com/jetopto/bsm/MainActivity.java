@@ -8,16 +8,16 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.jetopto.bsm.custom.view.CustomViewPager;
 import com.jetopto.bsm.custom.view.SensorLevelView;
 import com.jetopto.bsm.fragment.CategoryFragment;
 import com.jetopto.bsm.fragment.ContactsFragment;
+import com.jetopto.bsm.fragment.DashBoardFragment;
 import com.jetopto.bsm.fragment.MapFragment;
 import com.jetopto.bsm.presenter.MainPresenterImpl;
 import com.jetopto.bsm.presenter.interfaces.IBasePresenter;
@@ -34,8 +34,11 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
     SensorLevelView mLeftView;
     SensorLevelView mRightView;
     SlidePageAdapter mPagerAdapter;
-    ViewPager mViewPager;
+    CustomViewPager mViewPager;
     IBasePresenter mPresenter;
+    Fragment mMapFragment;
+    Fragment mCategoryFragment;
+    Fragment mDashFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,7 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
         mPresenter.attachView(getApplicationContext(), this);
         requestAllPermissions();
         if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            requestRunTimePermission(this, LOCATION_PERMISSIONS , REQUEST_PERMISSION_LOCATION);
+            requestRunTimePermission(this, LOCATION_PERMISSIONS, REQUEST_PERMISSION_LOCATION);
         } else {
             Toast.makeText(getBaseContext(), R.string.location_permission_get, Toast.LENGTH_SHORT).show();
         }
@@ -54,14 +57,14 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
         if (!checkPermission(Manifest.permission.BLUETOOTH_ADMIN)) {
 
             Toast.makeText(getBaseContext(), R.string.bt_admin_permission_failed, Toast.LENGTH_LONG).show();
-            requestRunTimePermission(this, BLUETOOTH_PERMISSIONS , REQUEST_PERMISSION_BLUETOOTH);
+            requestRunTimePermission(this, BLUETOOTH_PERMISSIONS, REQUEST_PERMISSION_BLUETOOTH);
         } else {
             Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_LONG).show();
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !=
                 PackageManager.PERMISSION_GRANTED) {
-            requestRunTimePermission(this, CONTACTS_PERMISSIONS , REQUEST_PERMISSION_CONTACT);
+            requestRunTimePermission(this, CONTACTS_PERMISSIONS, REQUEST_PERMISSION_CONTACT);
         } else {
             Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_LONG).show();
         }
@@ -87,7 +90,13 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        int curPosition = mViewPager.getCurrentItem();
+        Log.i(TAG, "back: " + curPosition);
+        if (curPosition == 0) {
+            super.onBackPressed();
+        } else {
+            mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mCategoryFragment), false);
+        }
     }
 
 
@@ -112,12 +121,12 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
 
     @Override
     public void onClick(int id) {
-        Log.d(TAG, "resource id: " + id);
         switch (id) {
             case R.drawable.map_selector:
-
+                mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mMapFragment), false);
                 break;
             case R.drawable.dashboard_selector:
+                mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mDashFragment), false);
                 break;
             case R.drawable.contact_selector:
                 showContactsFragment();
@@ -133,14 +142,19 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
         fragment.show(getSupportFragmentManager(), "contacts");
     }
 
+
     private void initView() {
         mViewPager = findViewById(R.id.view_pager_category);
         mPagerAdapter = new SlidePageAdapter(getSupportFragmentManager());
-        Fragment category = new CategoryFragment();
-        mPagerAdapter.addFragment(category);
-        Fragment map = new MapFragment();
-        mPagerAdapter.addFragment(map);
+
+        mCategoryFragment = new CategoryFragment();
+        mMapFragment = new MapFragment();
+        mDashFragment = new DashBoardFragment();
+        mPagerAdapter.addFragment(mCategoryFragment);
+        mPagerAdapter.addFragment(mMapFragment);
+        mPagerAdapter.addFragment(mDashFragment);
         mViewPager.setAdapter(mPagerAdapter);
+//        mViewPager.setPageTransformer(true, new DepthPageTransformer());
         mLeftView = findViewById(R.id.sensor_bar_left);
         mRightView = findViewById(R.id.sensor_bar_right);
 
@@ -160,11 +174,22 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
 
         public void addFragment(Fragment fragment) {
             mFragmentList.add(fragment);
+            notifyDataSetChanged();
         }
 
         @Override
         public Fragment getItem(int position) {
             return mFragmentList.get(position);
+        }
+
+
+        private int getItemIndex(@NonNull Object object) {
+            for (int i = 0; i < mFragmentList.size(); i++) {
+                if (object.equals(mFragmentList.get(i))) {
+                    return i;
+                }
+            }
+            return super.getItemPosition(object);
         }
 
         @Override
@@ -221,4 +246,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
                 break;
         }
     }
+
+
 }

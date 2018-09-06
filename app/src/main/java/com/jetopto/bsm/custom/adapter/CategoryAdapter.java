@@ -1,9 +1,7 @@
 package com.jetopto.bsm.custom.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,13 +63,13 @@ public class CategoryAdapter extends BaseAdapter {
         TextView textView = view.findViewById(R.id.label_category);
         Log.i(TAG, "resource" + category.getImageId());
         int resId = category.getImageId();
-        if (-1 != resId )
-        imageView.setBackground(mContext.getResources().getDrawable(resId));
+        if (-1 != resId) {
+            imageView.setBackground(mContext.getResources().getDrawable(resId));
+        }
         textView.setText(category.getLabel());
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "onClickonClickonClick" );
                 mListener.onClick(category);
             }
         });

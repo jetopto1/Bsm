@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <android.support.v4.view.ViewPager
+    <com.jetopto.bsm.custom.view.CustomViewPager
         android:id="@+id/view_pager_category"
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toEndOf="@id/sensor_bar_left"
         app:layout_constraintTop_toTopOf="parent">
 
-    </android.support.v4.view.ViewPager>
+    </com.jetopto.bsm.custom.view.CustomViewPager>
     <!--<GridLayout-->
     <!--android:layout_width="0dp"-->
     <!--android:layout_height="match_parent"-->
