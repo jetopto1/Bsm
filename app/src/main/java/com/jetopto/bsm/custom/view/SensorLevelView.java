@@ -15,9 +15,10 @@ public class SensorLevelView extends LinearLayout {
 
     private static final String TAG = SensorLevelView.class.getSimpleName();
 
-    private ImageView mEmergentImageView;
-    private ImageView mUrgentImageView;
-    private ImageView mSafetyImageView;
+//    private ImageView mEmergentImageView;
+//    private ImageView mUrgentImageView;
+//    private ImageView mSafetyImageView;
+    private ImageView mStatusImageView;
 
     public SensorLevelView(Context context) {
         super(context);
@@ -27,10 +28,11 @@ public class SensorLevelView extends LinearLayout {
         super(context, attrs);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.sensor_status_view, this, true);
-        mEmergentImageView = findViewById(R.id.emergent);
-        mUrgentImageView = findViewById(R.id.urgent);
-        mSafetyImageView = findViewById(R.id.safety);
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.stick_sensor_status_view, this, true);
+        mStatusImageView = findViewById(R.id.stick_status_view);
+//        mEmergentImageView = findViewById(R.id.emergent);
+//        mUrgentImageView = findViewById(R.id.urgent);
+//        mSafetyImageView = findViewById(R.id.safety);
     }
 
     public void updateSensorLevel(String level) {
@@ -38,19 +40,18 @@ public class SensorLevelView extends LinearLayout {
         Log.d(TAG, "Level " + level);
         switch (level) {
             case "safety":
-                mSafetyImageView.setEnabled(true);
-                mUrgentImageView.setEnabled(false);
-                mEmergentImageView.setEnabled(false);
+//                mSafetyImageView.setEnabled(true);
+//                mUrgentImageView.setEnabled(false);
+//                mEmergentImageView.setEnabled(false);
+                mStatusImageView.setEnabled(true);
                 break;
             case "urgent":
-                mSafetyImageView.setEnabled(true);
-                mUrgentImageView.setEnabled(true);
-                mEmergentImageView.setEnabled(false);
+//                mSafetyImageView.setEnabled(true);
+//                mUrgentImageView.setEnabled(true);
+//                mEmergentImageView.setEnabled(false);
                 break;
             case "emergent":
-                mSafetyImageView.setEnabled(true);
-                mUrgentImageView.setEnabled(true);
-                mEmergentImageView.setEnabled(true);
+                mStatusImageView.setEnabled(false);
                 break;
         }
     }
