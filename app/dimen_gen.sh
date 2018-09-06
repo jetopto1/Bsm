@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 show_usage() {
     echo "usage: dimen_gen.sh path/base_dimens.xml"
 }
@@ -40,7 +41,7 @@ do
         if [[ ($line = *"dp"*) || ($line = *"sp"*) ]]; then
           cur=`echo $line | awk -F'>' '{print $2}' | sed "s/dp.*\|sp.*//g"`
           new=`echo "scale=2; $cur * $factor" | bc |sed -E 's/(^|[^0-9])\./\10./g'`
-          out=`echo $line | sed "s/${cur}dp/${new}dp/g"`
+          out=`echo $line | sed "s/${cur}/${new}/g"`
           echo "$default_space$out" >> $file_name
         else
           echo $line >> $file_name

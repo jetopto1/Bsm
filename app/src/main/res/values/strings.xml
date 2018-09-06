@@ -7,4 +7,7 @@
     <string name="bt_admin_permission_failed">BT admin permission not granted</string>
     <string name="location_permission_get">Location permission granted</string>
     <string name="location_permission_failed">Locatuon permission not granted</string>
+
+    <string name="zero">0</string>
+    <string name="kmh">km/h</string>
 </resources>
