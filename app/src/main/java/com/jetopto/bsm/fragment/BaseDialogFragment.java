@@ -23,6 +23,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.BOTTOM;
         wlp.width = width;
+        wlp.x = (int) (getResources().getDimension(R.dimen.sensor_margin_start) + 0.5);
         Log.i(TAG, "window width: " + width);
         wlp.height = WindowManager.LayoutParams.MATCH_PARENT;
         window.setAttributes(wlp);

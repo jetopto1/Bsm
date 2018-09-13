@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="sensor_margin_start">36.00dp</dimen>
     <dimen name="sensor_status_width">70.00dp</dimen>
     <dimen name="category_gridview_padding_edge">12.00dp</dimen>
     <dimen name="category_margin_edge">12.00dp</dimen>

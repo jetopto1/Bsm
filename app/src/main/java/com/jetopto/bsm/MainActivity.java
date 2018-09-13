@@ -19,6 +19,7 @@ import com.jetopto.bsm.fragment.CategoryFragment;
 import com.jetopto.bsm.fragment.ContactsFragment;
 import com.jetopto.bsm.fragment.DashBoardFragment;
 import com.jetopto.bsm.fragment.MapFragment;
+import com.jetopto.bsm.fragment.VideoFragment;
 import com.jetopto.bsm.presenter.MainPresenterImpl;
 import com.jetopto.bsm.presenter.interfaces.IBasePresenter;
 import com.jetopto.bsm.presenter.interfaces.MainMvpView;
@@ -123,7 +124,11 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
     public void onClick(int id) {
         switch (id) {
             case R.drawable.map_selector:
-                mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mMapFragment), false);
+                if (getPreference("demoMode", false)) {
+                    showDemoVideo();
+                } else {
+                    mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mMapFragment), false);
+                }
                 break;
             case R.drawable.dashboard_selector:
                 mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mDashFragment), false);
@@ -132,8 +137,16 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
                 showContactsFragment();
                 break;
             case R.drawable.setting_selector:
+                boolean curValue = getPreference("demoMode", false);
+                editPreference("demoMode", !curValue);
                 break;
         }
+    }
+
+    private void showDemoVideo() {
+        VideoFragment fragment = new VideoFragment();
+        fragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+        fragment.show(getSupportFragmentManager(), "video");
     }
 
     private void showContactsFragment() {
