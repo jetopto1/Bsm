@@ -36,7 +36,7 @@ public class SensorMonitorService extends Service {
 
     //BLE
     private BluetoothAdapter mBTAdapter;
-    private static final long SCAN_PERIOD = 10000;
+    private static final long SCAN_PERIOD = 1000 * 60 * 30;
     private static final int MaxDeviceCount = 500;
     private final String BLE_MAC = "D6:44:A1:7A:BB:83";
     private final String BLE_NAME = "HC-42";
@@ -227,10 +227,14 @@ public class SensorMonitorService extends Service {
 
         if (enable) {
             Log.e(TAG, "BLE scanning .......");
-//            mHandler.postDelayed(() -> {
-//                Toast.makeText(getApplicationContext(), "Scan stop!", Toast.LENGTH_SHORT).show();
-//                mBTAdapter.stopLeScan(mLeScanCallback); // API 19 method
-//            },SCAN_PERIOD);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(SensorMonitorService.this.getApplicationContext(), "Scan stop!", Toast.LENGTH_SHORT).show();
+                    mBTAdapter.stopLeScan(mLeScanCallback); // API 19 method
+                    SensorMonitorService.this.scanLeDevice(true);
+                }
+            },SCAN_PERIOD);
 
             mBTAdapter.startLeScan(mLeScanCallback); // API 19 method
         } else {
