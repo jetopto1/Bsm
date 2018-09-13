@@ -12,11 +12,6 @@ import android.util.Log;
 import com.google.android.gms.common.util.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 
 public abstract class BaseFragmentActivity extends FragmentActivity implements
         ActivityCompat.OnRequestPermissionsResultCallback {
@@ -81,4 +76,17 @@ public abstract class BaseFragmentActivity extends FragmentActivity implements
         return isFirstTime;
     }
 
+    protected void editPreference(String key, boolean value) {
+        String pref = getPackageName();
+        Log.i(TAG, "pref: " + pref);
+        SharedPreferences preferences = getSharedPreferences(pref, MODE_PRIVATE);
+        preferences.edit().putBoolean(key, value).apply();
+    }
+
+    protected boolean getPreference(String key, boolean defValue) {
+        String pref = getPackageName();
+        Log.i(TAG, "pref: " + pref);
+        SharedPreferences preferences = getSharedPreferences(pref, MODE_PRIVATE);
+        return preferences.getBoolean(key, defValue);
+    }
 }

@@ -7,12 +7,19 @@
     android:background="@android:color/background_dark"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/empty_side"
+        android:layout_width="@dimen/sensor_status_width"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
     <com.jetopto.bsm.custom.view.SensorLevelView
         android:id="@+id/sensor_bar_left"
         layout="@layout/sensor_status_view"
         android:layout_width="@dimen/sensor_status_width"
         android:layout_height="match_parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/empty_side" />
 
     <com.jetopto.bsm.custom.view.CustomViewPager
         android:id="@+id/view_pager_category"
