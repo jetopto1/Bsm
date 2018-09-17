@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="category_label_name">
-        <item>Map</item>
-        <item>Dashboard</item>
-        <item>Contact</item>
-        <item>Settings</item>
+        <item>@string/label_map</item>
+        <item>@string/label_dashboard</item>
+        <item>@string/label_bsm</item>
+        <item>@string/label_contact</item>
+        <item>@string/label_settings</item>
+        <item>@string/label_dvr</item>
     </string-array>
 
     <string-array name="category_icon">
         <item>@drawable/map_selector</item>
         <item>@drawable/dashboard_selector</item>
+        <item>@drawable/bsm_selector</item>
         <item>@drawable/contact_selector</item>
         <item>@drawable/setting_selector</item>
+        <item>@drawable/dvr_selector</item>
     </string-array>
 </resources>

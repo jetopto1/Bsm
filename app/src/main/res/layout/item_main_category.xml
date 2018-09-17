@@ -3,9 +3,11 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view_category"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/category_card_height"
     android:layout_gravity="center"
-    card_view:cardCornerRadius="4dp">
+    android:background="@android:color/background_dark"
+    android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardCornerRadius="3dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,21 +16,22 @@
         android:orientation="vertical">
 
         <ImageView
+            android:layout_marginTop="@dimen/category_margin_top"
             android:id="@+id/image_category"
             android:layout_width="@dimen/category_icon_width"
             android:layout_height="@dimen/category_icon_height"
             android:layout_gravity="center"
-            android:background="@drawable/ic_bsm"
-            android:layout_margin="5dp" />
+            android:background="@drawable/ic_bsm" />
 
         <TextView
             android:id="@+id/label_category"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="4dp"
+            android:layout_marginTop="@dimen/category_margin_top"
             android:gravity="center"
             android:maxLines="1"
             android:textColor="@android:color/white"
-            android:textSize="20sp" />
+            android:textSize="@dimen/category_font_size" />
     </LinearLayout>
+
 </android.support.v7.widget.CardView>
