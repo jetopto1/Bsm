@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+
+    <color name="colorMainBackground">#434343</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorContactBackGround">#aaa</color>
     <color name="colorSensorLevelGray">#4d5050</color>

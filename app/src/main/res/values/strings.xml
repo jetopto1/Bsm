@@ -8,6 +8,12 @@
     <string name="location_permission_get">Location permission granted</string>
     <string name="location_permission_failed">Locatuon permission not granted</string>
 
+    <string name="label_bsm">BSM</string>
+    <string name="label_contact">Contact</string>
+    <string name="label_dashboard">DashBoard</string>
+    <string name="label_dvr">DVR</string>
+    <string name="label_map">Map</string>
+    <string name="label_settings">Setting</string>
     <string name="zero">0</string>
     <string name="kmh">km/h</string>
 </resources>

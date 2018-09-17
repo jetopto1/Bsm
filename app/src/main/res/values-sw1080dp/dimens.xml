@@ -2,7 +2,10 @@
 <resources>
     <dimen name="sensor_status_width">105.00dp</dimen>
     <dimen name="category_gridview_padding_edge">18.00dp</dimen>
-    <dimen name="category_margin_edge">18.00dp</dimen>
+    <dimen name="category_margin_top">18.00dp</dimen>
+    <dimen name="category_padding_top">18.00dp</dimen>
+    <dimen name="category_font_size">72.00sp</dimen>
+    <dimen name="category_card_height">492.00dp</dimen>
     <dimen name="category_icon_width">300.00dp</dimen>
     <dimen name="category_icon_height">300.00dp</dimen>
 
