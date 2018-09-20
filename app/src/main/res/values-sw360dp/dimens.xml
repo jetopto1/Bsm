@@ -4,7 +4,7 @@
     <dimen name="sensor_status_width">35dp</dimen>
     <dimen name="category_gridview_padding_edge">6dp</dimen>
     <dimen name="category_margin_top">6dp</dimen>
-    <dimen name="category_padding_top">6dp</dimen>
+    <dimen name="category_padding_top">3dp</dimen>
     <dimen name="category_font_size">24sp</dimen>
     <dimen name="category_card_height">164dp</dimen>
     <dimen name="category_icon_width">100dp</dimen>

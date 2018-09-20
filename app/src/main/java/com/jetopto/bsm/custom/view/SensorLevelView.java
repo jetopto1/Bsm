@@ -1,11 +1,13 @@
 package com.jetopto.bsm.custom.view;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -51,9 +53,31 @@ public class SensorLevelView extends LinearLayout {
 //                mEmergentImageView.setEnabled(false);
                 break;
             case "emergent":
-                mStatusImageView.setEnabled(false);
+//                mStatusImageView.setEnabled(false);
+                animation();
                 break;
         }
     }
 
+    private void animation() {
+        int red = getResources().getColor(R.color.colorSensorLevelRed);
+        int green = getResources().getColor(R.color.colorSensorLevelGreen);
+        ValueAnimator animator;
+        if (Build.VERSION_CODES.KITKAT < Build.VERSION.SDK_INT) {
+            animator = ValueAnimator.ofArgb(red, green);
+        } else {
+            animator = ValueAnimator.ofInt(red, green);
+            animator.setEvaluator(new ArgbEvaluator());
+        }
+
+        animator.setDuration(2500);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int color = (int) animation.getAnimatedValue();
+                mStatusImageView.setBackgroundColor(color);
+            }
+        });
+        animator.start();
+    }
 }
