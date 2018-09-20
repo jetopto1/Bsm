@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.jetopto.bsm.core.listener.ISensorStateListener;
 import com.jetopto.bsm.utils.Constant;
+import com.jetopto.bsm.utils.classes.BsmBind;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,21 +226,24 @@ public class SensorMonitorService extends Service {
 
     private void scanLeDevice(final boolean enable) {
 
-        if (enable) {
-            Log.e(TAG, "BLE scanning .......");
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(SensorMonitorService.this.getApplicationContext(), "Scan stop!", Toast.LENGTH_SHORT).show();
-                    mBTAdapter.stopLeScan(mLeScanCallback); // API 19 method
-                    SensorMonitorService.this.scanLeDevice(true);
-                }
-            },SCAN_PERIOD);
-
-            mBTAdapter.startLeScan(mLeScanCallback); // API 19 method
+        if (new BsmBind().isBsmBind()) {
+            if (enable) {
+                Log.e(TAG, "BLE scanning .......");
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SensorMonitorService.this.getApplicationContext(), "Scan stop!", Toast.LENGTH_SHORT).show();
+                        mBTAdapter.stopLeScan(mLeScanCallback); // API 19 method
+                        SensorMonitorService.this.scanLeDevice(true);
+                    }
+                }, SCAN_PERIOD);
+                mBTAdapter.startLeScan(mLeScanCallback); // API 19 method
+            } else {
+                mBTAdapter.stopLeScan(mLeScanCallback);
+            }
         } else {
-            mBTAdapter.stopLeScan(mLeScanCallback);
-
+            //TODO: Need to set bind state as true and call scanDevice(true) at Settings
+            Toast.makeText(SensorMonitorService.this.getApplicationContext(), "Please bind BSM first !Stop scan !", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -275,7 +279,7 @@ public class SensorMonitorService extends Service {
                                 scanIndex, scanDevice[scanIndex].Name, scanDevice[scanIndex].Address, scanDevice[scanIndex].RSSI, packetLength));
 
                         //Parsing BSM UUID
-                        if (/*scanDevice[scanIndex].Name.equals(BLE_NAME) && */scanDevice[scanIndex].Address.equals(BLE_MAC)) {
+                        if (/*scanDevice[scanIndex].Name.equals(BLE_NAME) && */scanDevice[scanIndex].Address.equals(new BsmBind().getDeviceMAC())) {
                             Log.d(TAG, "Detect BSM iBecon !!");
                             SensorMonitorService.this.BsmDataParsing(scanIndex);
                         }
