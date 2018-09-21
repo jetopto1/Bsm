@@ -19,6 +19,7 @@ import com.jetopto.bsm.fragment.CategoryFragment;
 import com.jetopto.bsm.fragment.ContactsFragment;
 import com.jetopto.bsm.fragment.DashBoardFragment;
 import com.jetopto.bsm.fragment.MapFragment;
+import com.jetopto.bsm.fragment.SettingFragment;
 import com.jetopto.bsm.fragment.VideoFragment;
 import com.jetopto.bsm.presenter.MainPresenterImpl;
 import com.jetopto.bsm.presenter.interfaces.IBasePresenter;
@@ -40,6 +41,7 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
     Fragment mMapFragment;
     Fragment mCategoryFragment;
     Fragment mDashFragment;
+    Fragment mSettingFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +139,9 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
                 showContactsFragment();
                 break;
             case R.drawable.setting_selector:
-                boolean curValue = getPreference("demoMode", false);
-                editPreference("demoMode", !curValue);
+//                boolean curValue = getPreference("demoMode", false);
+//                editPreference("demoMode", !curValue);
+                mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mSettingFragment), false);
                 break;
         }
     }
@@ -155,7 +158,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
         fragment.show(getSupportFragmentManager(), "contacts");
     }
 
-
     private void initView() {
         mViewPager = findViewById(R.id.view_pager_category);
         mPagerAdapter = new SlidePageAdapter(getSupportFragmentManager());
@@ -163,9 +165,11 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
         mCategoryFragment = new CategoryFragment();
         mMapFragment = new MapFragment();
         mDashFragment = new DashBoardFragment();
+        mSettingFragment = new SettingFragment();
         mPagerAdapter.addFragment(mCategoryFragment);
         mPagerAdapter.addFragment(mMapFragment);
         mPagerAdapter.addFragment(mDashFragment);
+        mPagerAdapter.addFragment(mSettingFragment);
         mViewPager.setAdapter(mPagerAdapter);
 //        mViewPager.setPageTransformer(true, new DepthPageTransformer());
         mLeftView = findViewById(R.id.sensor_bar_left);

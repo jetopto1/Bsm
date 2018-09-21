@@ -46,13 +46,16 @@ public class VideoFragment extends BaseDialogFragment {
     protected void setupSize() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int width = (int) (displayMetrics.widthPixels / 1.5);
+        int width = (int) (displayMetrics.widthPixels -
+                (getResources().getDimension(R.dimen.sensor_status_width) * 3));
         final Window window = getDialog().getWindow();
         window.setBackgroundDrawableResource(R.color.colorTransparent);
         window.getDecorView().setPadding(0, 0, 0, 0);
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.BOTTOM;
-        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wlp.width = width;
+        wlp.x = (int) (getResources().getDimension(R.dimen.sensor_margin_start) + 0.5);
+        Log.i(TAG, "window width: " + width);
         wlp.height = WindowManager.LayoutParams.MATCH_PARENT;
         window.setAttributes(wlp);
     }
