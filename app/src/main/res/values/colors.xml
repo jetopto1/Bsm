@@ -10,4 +10,5 @@
     <color name="colorSensorLevelRed">#ea0c00</color>
     <color name="colorSensorLevelYellow">#f2ff00</color>
     <color name="colorSensorLevelGreen">#15ff04</color>
+    <color name="colorSettingSelectedBg">#cdcdcd</color>
 </resources>

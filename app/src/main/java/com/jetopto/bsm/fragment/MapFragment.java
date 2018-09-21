@@ -67,10 +67,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
     @Override
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM_SCALE);
-        mGoogleMap.animateCamera(cameraUpdate);
-        mLocationManager.removeUpdates(this);
+//        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM_SCALE);
+//        mGoogleMap.animateCamera(cameraUpdate);
+//        mLocationManager.removeUpdates(this);
     }
 
     @Override
