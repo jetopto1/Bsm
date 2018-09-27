@@ -18,7 +18,7 @@ import com.jetopto.bsm.R;
 public class DashBoardFragment extends Fragment {
 
     private static final String TAG = DashBoardFragment.class.getSimpleName();
-
+    private static final int MAX_SPEED = 250;
     private HandlerThread mHandlerThread;
     private Handler mHandler;
     private TextView mHundredView;
@@ -39,8 +39,8 @@ public class DashBoardFragment extends Fragment {
     public void onResume() {
         super.onResume();
         /* TODO move data fetching function to presenter
-        *  TODO this phase is for demo
-        */
+         *  TODO this phase is for demo
+         */
         testData();
     }
 
@@ -75,18 +75,22 @@ public class DashBoardFragment extends Fragment {
     Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            for (int i = 0; i <= 120; i++) {
-                updateView(i);
+            for (int i = 0; i <= MAX_SPEED; i++) {
                 try {
-                    Thread.sleep(200);
+                    updateView(i);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
-                   Log.i(TAG, "interrupted, stop it.");
+                    Log.i(TAG, "interrupted, stop it.");
+                    return;
+                } catch (NullPointerException ne) {
+                    Log.e(TAG, ne.getMessage(), ne);
                     return;
                 }
             }
             afterSpeedUp();
         }
     };
+
     private void testData() {
         mHandlerThread = new HandlerThread("Sheldon");
         mHandlerThread.start();
@@ -98,7 +102,8 @@ public class DashBoardFragment extends Fragment {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateView((int) (Math.random() * (120 - 110 + 1)) + 110);
+                updateView((int) (Math.random() *
+                        (MAX_SPEED - (MAX_SPEED - 10) + 1)) + (MAX_SPEED - 10));
                 mHandler.postDelayed(this, 500);
             }
         }, 500);
@@ -114,6 +119,4 @@ public class DashBoardFragment extends Fragment {
             }
         });
     }
-
-
 }

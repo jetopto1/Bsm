@@ -6,22 +6,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTabHost;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.jetopto.bsm.R;
 
-public class SettingFragment extends Fragment implements View.OnClickListener {
-    private static final String TAG = SettingFragment.class.getSimpleName();
+public class SettingFragment extends BaseFragment implements View.OnClickListener {
 
-    private final String TAG_BLUETOOTH = BluetoothFragment.class.getSimpleName();
-    private final String TAG_BRIGHTNESS = BrightnessFragment.class.getSimpleName();
-    private final String TAG_VOLUME = VolumeFragment.class.getSimpleName();
-    private final String TAG_INFORMATION = InformationFragment.class.getSimpleName();
-    private final String TAG_DEMO = DemoFragment.class.getSimpleName();
+    private static final String TAG = SettingFragment.class.getSimpleName();
+    private final String TAG_BLUETOOTH = "Bluetooth";
+    private final String TAG_BRIGHTNESS = "Brightness";
+    private final String TAG_VOLUME = "Volume";
+    private final String TAG_INFORMATION = "Information";
+    private final String TAG_DEMO = "Demo";
 
     private FragmentTabHost mTabHost;
     private TextView mTitle;
@@ -30,6 +32,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private ImageView mVolume;
     private ImageView mInformation;
     private ImageView mDemo;
+
+    int mLastTab;
 
     @Nullable
     @Override
@@ -44,6 +48,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private void initView(View view) {
         mTabHost = view.findViewById(R.id.tap_layout);
         mTabHost.setup(getContext(), getChildFragmentManager(), android.R.id.tabcontent);
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_DEMO).setIndicator(TAG_DEMO),
+                DemoFragment.class, null);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_BRIGHTNESS).setIndicator(TAG_BRIGHTNESS),
                 BrightnessFragment.class, null);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_BLUETOOTH).setIndicator(TAG_BLUETOOTH),
@@ -52,8 +58,13 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 VolumeFragment.class, null);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_INFORMATION).setIndicator(TAG_INFORMATION),
                 InformationFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_DEMO).setIndicator(TAG_DEMO),
-                DemoFragment.class, null);
+        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+            @Override
+            public void onTabChanged(String tabId) {
+                mTitle.setText(tabId);
+                updateTabHost(tabId);
+            }
+        });
         mTitle = view.findViewById(R.id.title_view);
         mBrightness = view.findViewById(R.id.brightness);
         mBluetooth = view.findViewById(R.id.bluetooth);
@@ -69,55 +80,72 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    private void updateTabHost(String tab) {
+        int colorSelected = getResources().getColor(R.color.colorSettingSelectedBg);
+        int colorDark = getResources().getColor(android.R.color.background_dark);
+        //TODO Currently the selector of TabHost doesn't work, check it and remove ugly code of below
+        mBluetooth.setBackgroundColor(colorDark);
+        mBrightness.setBackgroundColor(colorDark);
+        mVolume.setBackgroundColor(colorDark);
+        mInformation.setBackgroundColor(colorDark);
+        mDemo.setBackgroundColor(colorDark);
+        switch (tab) {
+            case TAG_DEMO:
+                mDemo.setBackgroundColor(colorSelected);
+                break;
+            case TAG_BLUETOOTH:
+                mBluetooth.setBackgroundColor(colorSelected);
+                break;
+            case TAG_BRIGHTNESS:
+                mBrightness.setBackgroundColor(colorSelected);
+                break;
+            case TAG_VOLUME:
+                mVolume.setBackgroundColor(colorSelected);
+                break;
+            case TAG_INFORMATION:
+                mInformation.setBackgroundColor(colorSelected);
+                break;
+        }
+
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bluetooth:
                 mTabHost.setCurrentTabByTag(TAG_BLUETOOTH);
-                mTitle.setText("Bluetooth");
-                mBluetooth.setBackgroundColor(getResources().getColor(R.color.colorSettingSelectedBg));
-                mBrightness.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mVolume.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mInformation.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mDemo.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
                 break;
             case R.id.brightness:
                 mTabHost.setCurrentTabByTag(TAG_BRIGHTNESS);
-                mTitle.setText("Brightness");
-                mBluetooth.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mBrightness.setBackgroundColor(getResources().getColor(R.color.colorSettingSelectedBg));
-                mVolume.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mInformation.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mDemo.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
                 break;
             case R.id.volume:
                 mTabHost.setCurrentTabByTag(TAG_VOLUME);
-                mTitle.setText("Volume");
-                mBluetooth.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mBrightness.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mVolume.setBackgroundColor(getResources().getColor(R.color.colorSettingSelectedBg));
-                mInformation.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mDemo.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
                 break;
             case R.id.information:
                 mTabHost.setCurrentTabByTag(TAG_INFORMATION);
-                mTitle.setText("Information");
-                mBluetooth.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mBrightness.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mVolume.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mInformation.setBackgroundColor(getResources().getColor(R.color.colorSettingSelectedBg));
-                mDemo.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
                 break;
             case R.id.demo:
                 mTabHost.setCurrentTabByTag(TAG_DEMO);
-                mTitle.setText("Demo");
-                mBluetooth.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mBrightness.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mVolume.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mInformation.setBackgroundColor(getResources().getColor(android.R.color.background_dark));
-                mDemo.setBackgroundColor(getResources().getColor(R.color.colorSettingSelectedBg));
-
                 break;
+        }
+    }
+
+
+    @Override
+    public void handleKeyEvent(int keyCode) {
+        //TODO get wrong position when tab on the top.
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (mTabHost.getCurrentTab() == 1 && mLastTab == 1) {
+                    mTabHost.setCurrentTabByTag(TAG_DEMO);
+                }
+                break;
+        }
+        mLastTab = mTabHost.getCurrentTab();
+        String tag = mTabHost.getCurrentTabTag();
+        Fragment frag = getChildFragmentManager().findFragmentByTag(tag);
+        if (frag instanceof BaseFragment) {
+            ((BaseFragment) frag).handleKeyEvent(keyCode);
         }
     }
 }

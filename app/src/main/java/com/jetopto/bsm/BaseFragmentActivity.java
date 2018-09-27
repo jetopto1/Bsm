@@ -7,9 +7,10 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
+import android.view.View;
 
 import com.google.android.gms.common.util.ArrayUtils;
+import com.jetopto.bsm.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -76,17 +77,18 @@ public abstract class BaseFragmentActivity extends FragmentActivity implements
         return isFirstTime;
     }
 
-    protected void editPreference(String key, boolean value) {
-        String pref = getPackageName();
-        Log.i(TAG, "pref: " + pref);
-        SharedPreferences preferences = getSharedPreferences(pref, MODE_PRIVATE);
-        preferences.edit().putBoolean(key, value).apply();
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            hideNavigationBar();
+        }
     }
 
-    protected boolean getPreference(String key, boolean defValue) {
-        String pref = getPackageName();
-        Log.i(TAG, "pref: " + pref);
-        SharedPreferences preferences = getSharedPreferences(pref, MODE_PRIVATE);
-        return preferences.getBoolean(key, defValue);
+    private void hideNavigationBar() {
+        if (Utils.shouldHideNavBar(getResources())) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }
     }
 }

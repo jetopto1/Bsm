@@ -47,7 +47,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
         // R.id.map is a FrameLayout, not a Fragment
         getChildFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        if (mLocationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER))
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+
+        if (mLocationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER))
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
         return view;
     }
 

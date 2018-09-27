@@ -25,8 +25,17 @@ public class ContactsFragment extends BaseDialogFragment implements
 
     private static final String TAG = ContactsFragment.class.getSimpleName();
 
-    private RecyclerView mRecyclerView;
     private ArrayList<UserContacts> mContactList;
+
+    public static ContactsFragment newInstance() {
+        ContactsFragment f = new ContactsFragment();
+        return f;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Nullable
     @Override
@@ -36,9 +45,10 @@ public class ContactsFragment extends BaseDialogFragment implements
         setupSize();
         getContactList();
         initView(mMainView);
+        registerOnKeyListener();
+        hideNavigationBar();
         return mMainView;
     }
-
 
     @Override
     public void onItemClick(UserContacts contact) {
@@ -51,10 +61,14 @@ public class ContactsFragment extends BaseDialogFragment implements
     private void initView(View view) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        ContactsAdapter adapter = new ContactsAdapter(mContactList, this);
-        mRecyclerView = view.findViewById(R.id.contacts_list);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(adapter);
+        if (!mContactList.isEmpty()) {
+            view.findViewById(R.id.empty_view).setVisibility(View.GONE);
+            ContactsAdapter adapter = new ContactsAdapter(mContactList, this);
+            RecyclerView mRecyclerView = view.findViewById(R.id.contacts_list);
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setAdapter(adapter);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void getContactList() {

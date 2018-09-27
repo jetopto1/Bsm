@@ -1,6 +1,7 @@
 package com.jetopto.bsm;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,13 +9,16 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.jetopto.bsm.custom.view.CustomViewPager;
 import com.jetopto.bsm.custom.view.SensorLevelView;
+import com.jetopto.bsm.fragment.BaseFragment;
 import com.jetopto.bsm.fragment.CategoryFragment;
 import com.jetopto.bsm.fragment.ContactsFragment;
 import com.jetopto.bsm.fragment.DashBoardFragment;
@@ -25,11 +29,13 @@ import com.jetopto.bsm.presenter.MainPresenterImpl;
 import com.jetopto.bsm.presenter.interfaces.IBasePresenter;
 import com.jetopto.bsm.presenter.interfaces.MainMvpView;
 import com.jetopto.bsm.utils.Constant;
+import com.jetopto.bsm.utils.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseFragmentActivity implements MainMvpView, CategoryFragment.OnCategoryClick {
+public class MainActivity extends BaseFragmentActivity implements MainMvpView,
+        CategoryFragment.OnCategoryClick {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -83,7 +89,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
 //        this.startService(beaconScanIntent);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -94,7 +99,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
     @Override
     public void onBackPressed() {
         int curPosition = mViewPager.getCurrentItem();
-        Log.i(TAG, "back: " + curPosition);
         if (curPosition == 0) {
             super.onBackPressed();
         } else {
@@ -104,11 +108,16 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
 
 
     @Override
-    public void onSensorStateChanged(Bundle bundle) {
+    public void onSensorStateChanged(final Bundle bundle) {
         //TODO resolve sensor level
         if (null != bundle) {
-            mRightView.updateSensorLevel(bundle.getString(Constant.RIGHT_SENSOR_LEVEL));
-            mLeftView.updateSensorLevel(bundle.getString(Constant.LEFT_SENSOR_LEVEL));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mRightView.updateSensorLevel(bundle.getString(Constant.RIGHT_SENSOR_LEVEL));
+                    mLeftView.updateSensorLevel(bundle.getString(Constant.LEFT_SENSOR_LEVEL));
+                }
+            });
         }
     }
 
@@ -126,8 +135,9 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
     public void onClick(int id) {
         switch (id) {
             case R.drawable.map_selector:
-                if (getPreference("demoMode", false)) {
-                    showDemoVideo();
+                if (PreferenceManager.getBooleanPreference(this,
+                        PreferenceManager.DEMO_MODE, false)) {
+                    showDemoVideo(Constant.PLAY_NAVIGATION_FILE);
                 } else {
                     mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mMapFragment), false);
                 }
@@ -139,23 +149,45 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
                 showContactsFragment();
                 break;
             case R.drawable.setting_selector:
-//                boolean curValue = getPreference("demoMode", false);
-//                editPreference("demoMode", !curValue);
                 mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mSettingFragment), false);
+                break;
+            case R.drawable.dvr_selector:
+                showDemoVideo(Constant.PLAY_DVR_FILE);
+                break;
+            case R.drawable.bsm_selector:
+                //TODO TBD function
                 break;
         }
     }
 
-    private void showDemoVideo() {
-        VideoFragment fragment = new VideoFragment();
-        fragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        fragment.show(getSupportFragmentManager(), "video");
+    private void showDemoVideo(int video) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().
+                findFragmentByTag(VideoFragment.class.getSimpleName());
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = VideoFragment.newInstance(video);
+        newFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+        newFragment.show(ft, VideoFragment.class.getSimpleName());
     }
 
     private void showContactsFragment() {
-        ContactsFragment fragment = new ContactsFragment();
-        fragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-        fragment.show(getSupportFragmentManager(), "contacts");
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prev = getSupportFragmentManager().
+                findFragmentByTag(ContactsFragment.class.getSimpleName());
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = ContactsFragment.newInstance();
+        newFragment.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+        newFragment.show(ft, ContactsFragment.class.getSimpleName());
     }
 
     private void initView() {
@@ -171,10 +203,53 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
         mPagerAdapter.addFragment(mDashFragment);
         mPagerAdapter.addFragment(mSettingFragment);
         mViewPager.setAdapter(mPagerAdapter);
-//        mViewPager.setPageTransformer(true, new DepthPageTransformer());
         mLeftView = findViewById(R.id.sensor_bar_left);
         mRightView = findViewById(R.id.sensor_bar_right);
 
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                onBackPressed();
+                return true;
+        }
+
+        mViewPager.getCurrentItem();
+        Fragment f = mPagerAdapter.getItem(mViewPager.getCurrentItem());
+        if (f instanceof BaseFragment) {
+            ((BaseFragment) f).handleKeyEvent(keyCode);
+            return false;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (KeyEvent.KEYCODE_DPAD_LEFT == keyCode && event.getRepeatCount() == 15) {
+            onBackPressed();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sendProjectorIntent(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sendProjectorIntent(false);
+    }
+
+    private void sendProjectorIntent(boolean enable) {
+        Intent intent = new Intent("tmj.setting.projector.onoff");
+        intent.putExtra("projector_onoff", enable);
+        sendBroadcast(intent);
     }
 
     class SlidePageAdapter extends FragmentStatePagerAdapter {
@@ -228,7 +303,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -263,6 +337,4 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView, C
                 break;
         }
     }
-
-
 }

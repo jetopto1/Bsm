@@ -14,6 +14,12 @@
     <string name="label_dvr">DVR</string>
     <string name="label_map">Map</string>
     <string name="label_settings">Setting</string>
+    <string name="label_information">Information</string>
+    <string name="label_volume">Volume</string>
+    <string name="label_bluetooth">Bluetooth</string>
+    <string name="label_brightness">Brightness</string>
+    <string name="label_demo">Demo</string>
+    <string name="label_empty_contact">No contacts found.</string>
     <string name="zero">0</string>
     <string name="kmh">km/h</string>
 </resources>

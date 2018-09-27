@@ -21,6 +21,7 @@ public class SensorLevelView extends LinearLayout {
 //    private ImageView mUrgentImageView;
 //    private ImageView mSafetyImageView;
     private ImageView mStatusImageView;
+    private ValueAnimator mValueAnimator;
 
     public SensorLevelView(Context context) {
         super(context);
@@ -35,11 +36,13 @@ public class SensorLevelView extends LinearLayout {
 //        mEmergentImageView = findViewById(R.id.emergent);
 //        mUrgentImageView = findViewById(R.id.urgent);
 //        mSafetyImageView = findViewById(R.id.safety);
+        setupAnimator();
     }
 
     public void updateSensorLevel(String level) {
         //TODO change imageview state.
         Log.d(TAG, "Level " + level);
+        if (mValueAnimator.isRunning()) return;
         switch (level) {
             case "safety":
 //                mSafetyImageView.setEnabled(true);
@@ -54,30 +57,29 @@ public class SensorLevelView extends LinearLayout {
                 break;
             case "emergent":
 //                mStatusImageView.setEnabled(false);
-                animation();
+                mValueAnimator.start();
                 break;
         }
     }
 
-    private void animation() {
+    private void setupAnimator() {
         int red = getResources().getColor(R.color.colorSensorLevelRed);
         int green = getResources().getColor(R.color.colorSensorLevelGreen);
-        ValueAnimator animator;
+
         if (Build.VERSION_CODES.KITKAT < Build.VERSION.SDK_INT) {
-            animator = ValueAnimator.ofArgb(red, green);
+            mValueAnimator = ValueAnimator.ofArgb(red, green);
         } else {
-            animator = ValueAnimator.ofInt(red, green);
-            animator.setEvaluator(new ArgbEvaluator());
+            mValueAnimator = ValueAnimator.ofInt(red, green);
+            mValueAnimator.setEvaluator(new ArgbEvaluator());
         }
 
-        animator.setDuration(2500);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        mValueAnimator.setDuration(2000);
+        mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int color = (int) animation.getAnimatedValue();
                 mStatusImageView.setBackgroundColor(color);
             }
         });
-        animator.start();
     }
 }

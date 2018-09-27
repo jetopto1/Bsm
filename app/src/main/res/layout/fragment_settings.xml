@@ -9,10 +9,10 @@
         android:id="@+id/title_view"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="Brightness"
+        android:layout_marginStart="100dp"
+        android:text="@string/label_demo"
         android:textColor="@android:color/white"
         android:textSize="30sp"
-        android:layout_marginStart="100dp"
         app:layout_constraintBottom_toTopOf="@+id/tap_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,11 +48,22 @@
                     android:weightSum="5">
 
                     <ImageView
-                        android:id="@+id/brightness"
+                        android:id="@+id/demo"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:background="@color/colorSettingSelectedBg"
+                        android:paddingBottom="@dimen/margin_five"
+                        android:paddingTop="@dimen/margin_five"
+                        android:src="@drawable/ic_map" />
+
+                    <ImageView
+                        android:id="@+id/brightness"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:paddingBottom="@dimen/margin_five"
+                        android:paddingTop="@dimen/margin_five"
                         android:src="@drawable/ic_brightness" />
 
                     <ImageView
@@ -60,6 +71,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:paddingBottom="@dimen/margin_five"
+                        android:paddingTop="@dimen/margin_five"
                         android:src="@drawable/ic_bt" />
 
                     <ImageView
@@ -67,6 +80,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:paddingBottom="@dimen/margin_five"
+                        android:paddingTop="@dimen/margin_five"
                         android:src="@drawable/ic_volume" />
 
                     <ImageView
@@ -74,14 +89,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:paddingBottom="@dimen/margin_five"
+                        android:paddingTop="@dimen/margin_five"
                         android:src="@drawable/ic_information" />
 
-                    <ImageView
-                        android:id="@+id/demo"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:src="@drawable/ic_map"/>
                 </LinearLayout>
 
             </TabWidget>
@@ -89,9 +100,7 @@
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </FrameLayout>
-
+                android:layout_height="match_parent" />
         </LinearLayout>
     </android.support.v4.app.FragmentTabHost>
 

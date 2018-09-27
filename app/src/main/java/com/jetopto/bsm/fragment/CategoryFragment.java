@@ -4,8 +4,8 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,7 @@ import com.jetopto.bsm.utils.classes.Category;
 
 import java.util.ArrayList;
 
-public class CategoryFragment extends Fragment implements CategoryAdapter.ClickListener {
+public class CategoryFragment extends BaseFragment implements CategoryAdapter.ClickListener {
 
     private static final String TAG = CategoryFragment.class.getSimpleName();
 
@@ -25,6 +25,8 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.ClickL
         void onClick(int id);
     }
 
+    private CategoryAdapter adapter;
+    private GridView gridView;
     private OnCategoryClick mListener;
 
     @Nullable
@@ -46,10 +48,12 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.ClickL
     }
 
     private void initView(View view) {
-        GridView gridView = view.findViewById(R.id.grid_category);
-        CategoryAdapter adapter = new CategoryAdapter(getContext(), getData());
+        gridView = view.findViewById(R.id.grid_category);
+        adapter = new CategoryAdapter(getContext(), getData());
         adapter.registerListener(this);
         gridView.setAdapter(adapter);
+        gridView.setFocusable(true);
+//        view.setScaleY(-1);
     }
 
     private ArrayList<Category> getData() {
@@ -71,5 +75,41 @@ public class CategoryFragment extends Fragment implements CategoryAdapter.ClickL
         if (null != mListener) {
             mListener.onClick(category.getImageId());
         }
+    }
+
+    @Override
+    public void handleKeyEvent(int keyCode) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                adapter.performClick();
+                break;
+            default:
+                handleView(keyCode);
+                break;
+        }
+    }
+
+    private void handleView(int keyCode) {
+        int cur = adapter.getFocusedPosition();
+        int nxt = nextFocusedIndex(cur, keyCode);
+        adapter.setFocusedPosition(nxt);
+    }
+
+    private int nextFocusedIndex(int pre, int key) {
+        int index = pre;
+        int max = adapter.getCount();
+        int numColumns = gridView.getNumColumns();
+        switch (key) {
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                index = key == KeyEvent.KEYCODE_DPAD_LEFT ? pre - 1 : pre + 1;
+                break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                index = (pre > (max - numColumns) - 1) ? pre - numColumns : pre + numColumns;
+                break;
+        }
+
+        return (index >= max) ? 0 : (index < 0) ? max - 1 : index;
     }
 }

@@ -16,6 +16,7 @@
     <dimen name="contact_phone_height">88.80dp</dimen>
     <dimen name="contact_margin_parent_horizontal">44.40dp</dimen>
     <dimen name="contact_margin_thumb">22.20dp</dimen>
+    <dimen name="contact_empty_font_size">88.80sp</dimen>
 
     <dimen name="dash_line_width">954.60dp</dimen>
     <dimen name="dash_line_height">8.88dp</dimen>
@@ -23,6 +24,7 @@
     <dimen name="dash_kmh_font_size">66.60sp</dimen>
 
 <!--common value-->
+    <dimen name="margin_five">11.10dp</dimen>
     <dimen name="margin_fifteen">33.30dp</dimen>
     <dimen name="margin_thirty">66.60dp</dimen>
     <dimen name="margin_forty">88.80dp</dimen>
