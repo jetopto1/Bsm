@@ -6,9 +6,11 @@
     <string name="bt_admin_permission_get">BT admin permission granted</string>
     <string name="bt_admin_permission_failed">BT admin permission not granted</string>
     <string name="location_permission_get">Location permission granted</string>
-    <string name="location_permission_failed">Locatuon permission not granted</string>
+    <string name="location_permission_failed">Location permission not granted</string>
 
     <string name="label_bsm">BSM</string>
+    <string name="label_bsm_one">BSM 1</string>
+    <string name="label_bsm_two">BSM 2</string>
     <string name="label_contact">Contact</string>
     <string name="label_dashboard">DashBoard</string>
     <string name="label_dvr">DVR</string>
@@ -20,6 +22,7 @@
     <string name="label_brightness">Brightness</string>
     <string name="label_demo">Demo</string>
     <string name="label_empty_contact">No contacts found.</string>
+    <string name="msg_bsm_not_bind">No device bound. Stop scanning.</string>
     <string name="zero">0</string>
     <string name="kmh">km/h</string>
 </resources>

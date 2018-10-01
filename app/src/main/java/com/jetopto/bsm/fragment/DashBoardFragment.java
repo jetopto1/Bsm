@@ -57,9 +57,11 @@ public class DashBoardFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.i(TAG, "onPause");
-        mHandlerThread.interrupt();
-        mHandler.removeCallbacks(mRunnable);
-        mHandlerThread.quit();
+        if (null != mHandlerThread) {
+            mHandlerThread.interrupt();
+            mHandler.removeCallbacks(mRunnable);
+            mHandlerThread.quit();
+        }
     }
 
     private void initView(View view) {

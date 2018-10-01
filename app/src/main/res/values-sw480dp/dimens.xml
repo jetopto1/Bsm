@@ -6,7 +6,7 @@
     <dimen name="category_margin_top">7.98dp</dimen>
     <dimen name="category_padding_top">3.99dp</dimen>
     <dimen name="category_font_size">31.92sp</dimen>
-    <dimen name="category_card_height">218.12dp</dimen>
+    <dimen name="category_card_height">220.78dp</dimen>
     <dimen name="category_icon_width">133.00dp</dimen>
     <dimen name="category_icon_height">133.00dp</dimen>
 
@@ -23,6 +23,10 @@
     <dimen name="dash_speed_font_size">305.90sp</dimen>
     <dimen name="dash_kmh_font_size">39.90sp</dimen>
 
+
+    <dimen name="bt_setting_font_size">53.20sp</dimen>
+    <dimen name="bt_setting_toggle_width">133.00dp</dimen>
+    <dimen name="bt_setting_toggle_height">133.00dp</dimen>
 <!--common value-->
     <dimen name="margin_five">6.65dp</dimen>
     <dimen name="margin_fifteen">19.95dp</dimen>

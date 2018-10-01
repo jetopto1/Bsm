@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="sensor_margin_start">18dp</dimen>
     <dimen name="sensor_status_width">35dp</dimen>
     <dimen name="category_gridview_padding_edge">6dp</dimen>
-    <dimen name="category_margin_edge">6dp</dimen>
+    <dimen name="category_margin_top">6dp</dimen>
+    <dimen name="category_padding_top">3dp</dimen>
+    <dimen name="category_font_size">24sp</dimen>
+    <dimen name="category_card_height">166dp</dimen>
     <dimen name="category_icon_width">100dp</dimen>
     <dimen name="category_icon_height">100dp</dimen>
 
@@ -12,4 +16,22 @@
     <dimen name="contact_phone_height">40dp</dimen>
     <dimen name="contact_margin_parent_horizontal">20dp</dimen>
     <dimen name="contact_margin_thumb">10dp</dimen>
+    <dimen name="contact_empty_font_size">40sp</dimen>
+
+    <dimen name="dash_line_width">430dp</dimen>
+    <dimen name="dash_line_height">4dp</dimen>
+    <dimen name="dash_speed_font_size">230sp</dimen>
+    <dimen name="dash_kmh_font_size">30sp</dimen>
+
+
+    <dimen name="bt_setting_font_size">40sp</dimen>
+    <dimen name="bt_setting_toggle_width">100dp</dimen>
+    <dimen name="bt_setting_toggle_height">100dp</dimen>
+    <!--common value-->
+    <dimen name="margin_five">5dp</dimen>
+    <dimen name="margin_fifteen">15dp</dimen>
+    <dimen name="margin_thirty">30dp</dimen>
+    <dimen name="margin_forty">40dp</dimen>
+    <dimen name="margin_sixty">60dp</dimen>
+    <dimen name="margin_seventy">70dp</dimen>
 </resources>

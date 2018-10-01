@@ -1,7 +1,9 @@
 package com.jetopto.bsm.fragment;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,15 +20,16 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jetopto.bsm.R;
+import com.jetopto.bsm.utils.Utils;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback,LocationListener {
+public class MapFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
     private static final String TAG = MapFragment.class.getSimpleName();
     private static final long MIN_TIME = 400;
@@ -35,25 +39,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
     private SupportMapFragment mapFragment;
     private LocationManager mLocationManager;
     private GoogleMap mGoogleMap;
-    @SuppressLint("MissingPermission")
+
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        if (mapFragment == null) {
-            mapFragment = SupportMapFragment.newInstance();
-            mapFragment.getMapAsync(this);
+        Log.i(TAG, "onCreateView");
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            MapsInitializer.initialize(getActivity());
+            updateMapView();
         }
-        // R.id.map is a FrameLayout, not a Fragment
-        getChildFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
-        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        if (mLocationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER))
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
-
-        if (mLocationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER))
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
     }
 
     @SuppressLint("MissingPermission")
@@ -63,19 +74,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
         LatLng latLng = new LatLng(25.0727017, 121.5745552);
         mGoogleMap.addMarker(new MarkerOptions().position(latLng)
                 .title("JET OPTOELECTRONICS CO.,LTD."));
-        mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(),R.raw.map_style));
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,DEFAULT_ZOOM_SCALE));
+        mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.map_style));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM_SCALE));
         mGoogleMap.setMyLocationEnabled(true);
+
+        // R.id.map is a FrameLayout, not a Fragment
+
+        mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+        if (mLocationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER))
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
+        if (mLocationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER))
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
     }
 
 
     @Override
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Latitude: " + location.getLatitude() + ", Longitude: " + location.getLongitude());
-//        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM_SCALE);
-//        mGoogleMap.animateCamera(cameraUpdate);
-//        mLocationManager.removeUpdates(this);
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM_SCALE);
+        mGoogleMap.animateCamera(cameraUpdate);
+        mLocationManager.removeUpdates(this);
     }
 
     @Override
@@ -91,5 +110,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,Location
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.i(TAG, "onRequestPermissionsResult");
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Utils.showToast(getActivity(), "no permission to access map");
+        } else {
+            updateMapView();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void updateMapView() {
+        if (mapFragment == null) {
+            mapFragment = SupportMapFragment.newInstance();
+            mapFragment.getMapAsync(this);
+        }
+        getChildFragmentManager().beginTransaction().replace(R.id.map, mapFragment).commit();
     }
 }

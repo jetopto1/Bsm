@@ -2,15 +2,16 @@ package com.jetopto.bsm;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -26,24 +27,22 @@ import com.jetopto.bsm.fragment.MapFragment;
 import com.jetopto.bsm.fragment.SettingFragment;
 import com.jetopto.bsm.fragment.VideoFragment;
 import com.jetopto.bsm.presenter.MainPresenterImpl;
-import com.jetopto.bsm.presenter.interfaces.IBasePresenter;
 import com.jetopto.bsm.presenter.interfaces.MainMvpView;
 import com.jetopto.bsm.utils.Constant;
-import com.jetopto.bsm.utils.PreferenceManager;
+import com.jetopto.bsm.utils.PreferencesManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseFragmentActivity implements MainMvpView,
-        CategoryFragment.OnCategoryClick {
+        CategoryFragment.OnCategoryClick, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-
     SensorLevelView mLeftView;
     SensorLevelView mRightView;
     SlidePageAdapter mPagerAdapter;
     CustomViewPager mViewPager;
-    IBasePresenter mPresenter;
+    MainPresenterImpl mPresenter;
     Fragment mMapFragment;
     Fragment mCategoryFragment;
     Fragment mDashFragment;
@@ -57,26 +56,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
         mPresenter = new MainPresenterImpl();
         mPresenter.attachView(getApplicationContext(), this);
         requestAllPermissions();
-        if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            requestRunTimePermission(this, LOCATION_PERMISSIONS, REQUEST_PERMISSION_LOCATION);
-        } else {
-            Toast.makeText(getBaseContext(), R.string.location_permission_get, Toast.LENGTH_SHORT).show();
-        }
-
-        if (!checkPermission(Manifest.permission.BLUETOOTH_ADMIN)) {
-
-            Toast.makeText(getBaseContext(), R.string.bt_admin_permission_failed, Toast.LENGTH_LONG).show();
-            requestRunTimePermission(this, BLUETOOTH_PERMISSIONS, REQUEST_PERMISSION_BLUETOOTH);
-        } else {
-            Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_LONG).show();
-        }
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) !=
-                PackageManager.PERMISSION_GRANTED) {
-            requestRunTimePermission(this, CONTACTS_PERMISSIONS, REQUEST_PERMISSION_CONTACT);
-        } else {
-            Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_LONG).show();
-        }
 
         if (!getPackageManager().hasSystemFeature(getPackageManager().FEATURE_BLUETOOTH_LE)) {
             Toast.makeText(getBaseContext(), "BLE not support", Toast.LENGTH_SHORT).show();
@@ -92,7 +71,10 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPresenter.detachView();
+        if (null != mPresenter) {
+            mPresenter.detachView();
+            mPresenter = null;
+        }
 //        stopService(beaconScanIntent);
     }
 
@@ -105,7 +87,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
             mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mCategoryFragment), false);
         }
     }
-
 
     @Override
     public void onSensorStateChanged(final Bundle bundle) {
@@ -135,18 +116,26 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     public void onClick(int id) {
         switch (id) {
             case R.drawable.map_selector:
-                if (PreferenceManager.getBooleanPreference(this,
-                        PreferenceManager.DEMO_MODE, false)) {
+                if (PreferencesManager.getBoolean(this,
+                        PreferencesManager.KEY_DEMO_MODE, false)) {
                     showDemoVideo(Constant.PLAY_NAVIGATION_FILE);
                 } else {
-                    mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mMapFragment), false);
+                    if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                        requestRunTimePermission(this, LOCATION_PERMISSIONS, REQUEST_PERMISSION_LOCATION);
+                    } else {
+                        mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mMapFragment), false);
+                    }
                 }
                 break;
             case R.drawable.dashboard_selector:
                 mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mDashFragment), false);
                 break;
             case R.drawable.contact_selector:
-                showContactsFragment();
+                if (checkPermission(Manifest.permission.READ_CONTACTS)) {
+                    showContactsFragment();
+                } else {
+                    requestRunTimePermission(this, CONTACTS_PERMISSIONS, REQUEST_PERMISSION_CONTACT);
+                }
                 break;
             case R.drawable.setting_selector:
                 mViewPager.setCurrentItem(mPagerAdapter.getItemIndex(mSettingFragment), false);
@@ -237,6 +226,9 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     @Override
     protected void onResume() {
         super.onResume();
+        mPresenter.bindBsmService();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
         sendProjectorIntent(true);
     }
 
@@ -244,12 +236,48 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     protected void onPause() {
         super.onPause();
         sendProjectorIntent(false);
+        mPresenter.unbindBsmService();
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void sendProjectorIntent(boolean enable) {
         Intent intent = new Intent("tmj.setting.projector.onoff");
         intent.putExtra("projector_onoff", enable);
         sendBroadcast(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case REQUEST_PERMISSION_LOCATION:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    Toast.makeText(getBaseContext(), R.string.location_permission_get, Toast.LENGTH_SHORT).show();
+                    mMapFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                }
+                break;
+            case REQUEST_PERMISSION_BLUETOOTH:
+                if (grantResults.length > 0 &&
+                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mPresenter.bindBsmService();
+                }
+                break;
+            case REQUEST_PERMISSION_CONTACT:
+                break;
+            case REQUEST_PERMISSION_ALL:
+                Log.i(TAG, "request permission all");
+                break;
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(PreferencesManager.KEY_BSM_MAC)) {
+            mPresenter.bindBsmService();
+        }
     }
 
     class SlidePageAdapter extends FragmentStatePagerAdapter {
@@ -300,41 +328,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
         @Override
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             mFragmentManager.beginTransaction().hide(mFragmentList.get(position)).commit();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        switch (requestCode) {
-            case REQUEST_PERMISSION_LOCATION:
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getBaseContext(), R.string.location_permission_get, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getBaseContext(), R.string.location_permission_failed, Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case REQUEST_PERMISSION_BLUETOOTH:
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getBaseContext(), R.string.bt_admin_permission_failed, Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case REQUEST_PERMISSION_CONTACT:
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getBaseContext(), R.string.bt_admin_permission_get, Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getBaseContext(), R.string.bt_admin_permission_failed, Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case REQUEST_PERMISSION_ALL:
-                Log.i(TAG, "request permission all");
-                break;
         }
     }
 }

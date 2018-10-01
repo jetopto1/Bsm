@@ -10,10 +10,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:background="@color/colorMainBackground"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:horizontalSpacing="4dp"
         android:numColumns="3"
-        android:layout_marginTop="@dimen/category_padding_top"
+
         android:verticalSpacing="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -21,8 +21,7 @@
             android:id="@+id/image_category"
             android:layout_width="@dimen/category_icon_width"
             android:layout_height="@dimen/category_icon_height"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_bsm" />
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/label_category"

@@ -12,7 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import com.jetopto.bsm.R;
-import com.jetopto.bsm.utils.PreferenceManager;
+import com.jetopto.bsm.utils.PreferencesManager;
 
 public class DemoFragment extends BaseFragment {
     private static final String TAG = DemoFragment.class.getSimpleName();
@@ -30,13 +30,13 @@ public class DemoFragment extends BaseFragment {
 
     private void initView(View view) {
         toggleButton = view.findViewById(R.id.demo_toggle);
-        boolean demoMode = PreferenceManager.getBooleanPreference(getContext(),
-                PreferenceManager.DEMO_MODE, false);
+        boolean demoMode = PreferencesManager.getBoolean(getContext(),
+                PreferencesManager.KEY_DEMO_MODE, false);
         toggleButton.setChecked(demoMode);
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PreferenceManager.editPreference(getContext(), PreferenceManager.DEMO_MODE, isChecked);
+                PreferencesManager.put(getContext(), PreferencesManager.KEY_DEMO_MODE, isChecked);
             }
         });
     }

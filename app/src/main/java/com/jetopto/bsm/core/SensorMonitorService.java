@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.jetopto.bsm.core.listener.ISensorStateListener;
 import com.jetopto.bsm.utils.Constant;
+import com.jetopto.bsm.utils.PreferencesManager;
 import com.jetopto.bsm.utils.classes.BsmBind;
 
 import java.util.ArrayList;
@@ -25,7 +26,6 @@ import java.util.Random;
 public class SensorMonitorService extends Service {
 
     private static final String TAG = SensorMonitorService.class.getSimpleName();
-
 
     private List<ISensorStateListener> mListenerList = new ArrayList<>();
     private SensorMonitorBinder mBinder = new SensorMonitorBinder();
@@ -41,17 +41,18 @@ public class SensorMonitorService extends Service {
     private static final int MaxDeviceCount = 500;
     private final String BLE_MAC = "D6:44:A1:7A:BB:83";
     private final String BLE_NAME = "HC-42";
+    private BsmBind mBsmDevice;
 
     class deviceInfo {
         public String Name;
         public String Address;
         public Integer RSSI;
-        public int Type,BondState;
+        public int Type, BondState;
         public byte[] scanRecord;
     }
 
-    private deviceInfo[] scanDevice=new deviceInfo[MaxDeviceCount];
-    private Integer scanIndex=0;
+    private deviceInfo[] scanDevice = new deviceInfo[MaxDeviceCount];
+    private Integer scanIndex = 0;
 
 
     @Override
@@ -68,18 +69,18 @@ public class SensorMonitorService extends Service {
 //        } else {
 //            Log.e(TAG, "Please turn on Bluetooth");
 //        }
-
         return super.onStartCommand(intent, flags, startId);
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        initDevice();
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
 
         mBTAdapter = bluetoothManager.getAdapter();
-        mHandler= new Handler();
+        mHandler = new Handler();
 
         if (mBTAdapter.isEnabled()) {
             scanLeDevice(true);
@@ -89,15 +90,26 @@ public class SensorMonitorService extends Service {
         return mBinder;
     }
 
+    private void initDevice() {
+        mBsmDevice = new BsmBind();
+        mBsmDevice.setBindDeviceMAC(PreferencesManager.getString(getApplicationContext(),
+                PreferencesManager.KEY_BSM_MAC, null));
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-
+        Log.e(TAG, "onDestroy");
+        if (null != mHandler) {
+            mHandler.removeCallbacks(null);
+        }
 //        scanLeDevice(false);
     }
 
     public void registerListener(ISensorStateListener listener) {
-        mListenerList.add(listener);
+        if (!mListenerList.contains(listener)) {
+            mListenerList.add(listener);
+        }
     }
 
     public void unRegisterListener(ISensorStateListener listener) {
@@ -225,8 +237,7 @@ public class SensorMonitorService extends Service {
     }
 
     private void scanLeDevice(final boolean enable) {
-
-        if (new BsmBind().isBsmBind()) {
+        if (mBsmDevice.isBsmBind()) {
             if (enable) {
                 Log.e(TAG, "BLE scanning .......");
                 mHandler.postDelayed(new Runnable() {
@@ -253,8 +264,7 @@ public class SensorMonitorService extends Service {
                 public void onLeScan(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
 
                     if (scanIndex == MaxDeviceCount) scanIndex = 0;
-
-                    if (bluetoothDevice.getAddress().equals((BLE_MAC))) {
+                    if (bluetoothDevice.getAddress().equals((mBsmDevice.getDeviceMac()))) {
 
                         final String deviceName = bluetoothDevice.getName();
                         scanDevice[scanIndex] = new deviceInfo();
@@ -279,7 +289,7 @@ public class SensorMonitorService extends Service {
                                 scanIndex, scanDevice[scanIndex].Name, scanDevice[scanIndex].Address, scanDevice[scanIndex].RSSI, packetLength));
 
                         //Parsing BSM UUID
-                        if (/*scanDevice[scanIndex].Name.equals(BLE_NAME) && */scanDevice[scanIndex].Address.equals(new BsmBind().getDeviceMAC())) {
+                        if (/*scanDevice[scanIndex].Name.equals(BLE_NAME) && */scanDevice[scanIndex].Address.equals(mBsmDevice.getDeviceMac())) {
                             Log.d(TAG, "Detect BSM iBecon !!");
                             SensorMonitorService.this.BsmDataParsing(scanIndex);
                         }
@@ -292,21 +302,21 @@ public class SensorMonitorService extends Service {
 
     private void BsmDataParsing(int i) {
 
-        switch(scanDevice[i].Type) {
+        switch (scanDevice[i].Type) {
             case BluetoothDevice.DEVICE_TYPE_CLASSIC:
-                Log.d(TAG,"Classic");
+                Log.d(TAG, "Classic");
                 break;
             case BluetoothDevice.DEVICE_TYPE_LE:
-                Log.d(TAG,"BLE");
+                Log.d(TAG, "BLE");
                 break;
             case BluetoothDevice.DEVICE_TYPE_DUAL:
-                Log.d(TAG,"Dual");
+                Log.d(TAG, "Dual");
                 break;
             case BluetoothDevice.DEVICE_TYPE_UNKNOWN:
-                Log.d(TAG,"Ukonown");
+                Log.d(TAG, "Ukonown");
                 break;
             default:
-                Log.d(TAG,"Not defined");
+                Log.d(TAG, "Not defined");
                 break;
 
         }
@@ -317,19 +327,19 @@ public class SensorMonitorService extends Service {
         // Explain the scan  result, see BLUETOOTH SPECIFICATION Version 4.0 [Vol 3]
         // Part C. Generic Access Profile. Section 18 -  APPENDIX C
         final StringBuilder strEIR = new StringBuilder();
-        int p=0;
+        int p = 0;
 
-        while (p<scanDevice[i].scanRecord.length) {
+        while (p < scanDevice[i].scanRecord.length) {
             byte fieldLength = scanDevice[i].scanRecord[p];
-            byte fieldType =  scanDevice[i].scanRecord[p+1];
-            Integer  uuid16;
+            byte fieldType = scanDevice[i].scanRecord[p + 1];
+            Integer uuid16;
             Log.d(TAG, String.format(" scan field ptr=%d, length=%d, type = 0x%02X", p, fieldLength, fieldType));
             switch (fieldType) {
-                case (byte)0xff:
+                case (byte) 0xff:
                     strEIR.append("[0xFF] Manufacturer Specific Data: 0x").append(new DataHandle().byteArrayToHex(scanDevice[i].scanRecord, p + 2, fieldLength - 1)).append("\n");
-                    int adCompanyID = (scanDevice[i].scanRecord[p+2]&0xFF) | ((scanDevice[i].scanRecord[p+3]&0xFF)<<8);
+                    int adCompanyID = (scanDevice[i].scanRecord[p + 2] & 0xFF) | ((scanDevice[i].scanRecord[p + 3] & 0xFF) << 8);
                     strEIR.append(String.format("     Company ID: 0x%04X (%s)\n", adCompanyID, "JET"/*CompanyIDs.lookup(adCompanyID,"Unknown")*/));
-                    if (fieldLength>3) { //more data
+                    if (fieldLength > 3) { //more data
                         byte adDataType = scanDevice[i].scanRecord[p + 4];
                         strEIR.append(String.format("     Data Type: 0x%02X\n", adDataType));
                         switch (adDataType) {
@@ -354,7 +364,7 @@ public class SensorMonitorService extends Service {
                                     // Update sensor state
                                     updateSensorStatus(Integer.parseInt(new DataHandle().byteToHex(scanDevice[i].scanRecord, 24, 1).toString(), 16));
 
-                                    Log.e(TAG," color = " + Integer.parseInt(new DataHandle().byteToHex(scanDevice[i].scanRecord, 24, 1).toString(), 16));
+                                    Log.e(TAG, " color = " + Integer.parseInt(new DataHandle().byteToHex(scanDevice[i].scanRecord, 24, 1).toString(), 16));
 
 
                                     int adMajor = ((scanDevice[i].scanRecord[p + 22] & 0xFF) << 8 | (scanDevice[i].scanRecord[p + 23] & 0xFF));
@@ -376,10 +386,10 @@ public class SensorMonitorService extends Service {
                     break;
 
                 default:
-                    strEIR.append(String.format("[0x%02X] Unrecognized EIR type: 0x",fieldType)).append(new DataHandle().byteArrayToHex(scanDevice[i].scanRecord, p, fieldLength - 1)).append("\n");
+                    strEIR.append(String.format("[0x%02X] Unrecognized EIR type: 0x", fieldType)).append(new DataHandle().byteArrayToHex(scanDevice[i].scanRecord, p, fieldLength - 1)).append("\n");
                     break;
             } // end switch (field type)
-            p += (fieldLength+1);
+            p += (fieldLength + 1);
 
         } //end while
 

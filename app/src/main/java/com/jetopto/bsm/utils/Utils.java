@@ -1,9 +1,15 @@
 package com.jetopto.bsm.utils;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.util.Log;
+import android.widget.Toast;
 
 public class Utils {
+
+    private static final String TAG = Utils.class.getSimpleName();
+    private static Toast mToast;
 
     private static boolean hasNavBar(Resources resources) {
         int id = resources.getIdentifier("config_showNavigationBar",
@@ -46,6 +52,18 @@ public class Utils {
 
     public static boolean shouldHideNavBar(Resources resources) {
         //Reference mNavigationBarOnBottom in PhoneWindowManager.java
+        Log.i(TAG, "NavBarWidth: " + getNavigationBarWidth(resources));
+        Log.i(TAG, "NavBarHeight: " + getNavigationBarHeight(resources));
         return getNavigationBarWidth(resources) < getNavigationBarHeight(resources);
     }
+
+    public static void showToast(Context context, String content) {
+        if (mToast == null) {
+            mToast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
+        } else {
+            mToast.setText(content);
+        }
+        mToast.show();
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.jetopto.bsm.custom.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,7 +83,11 @@ public class CategoryAdapter extends BaseAdapter {
         final Category category = this.getItem(position);
         int resId = category.getImageId();
         if (-1 != resId) {
-            holder.imageView.setBackground(mContext.getResources().getDrawable(resId));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                holder.imageView.setBackground(mContext.getResources().getDrawable(resId));
+            } else {
+                holder.imageView.setImageDrawable(mContext.getResources().getDrawable(resId));
+            }
         }
 
         holder.textView.setText(category.getLabel());
