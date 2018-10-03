@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import com.jetopto.bsm.R;
-import com.jetopto.bsm.utils.Constant;
 import com.jetopto.bsm.utils.PreferencesManager;
 import com.jetopto.bsm.utils.Utils;
 
@@ -25,14 +25,16 @@ public class BluetoothFragment extends BaseFragment implements
 
     private ToggleButton mDeviceOneToggle;
     private ToggleButton mDeviceTwoToggle;
+    private View mFocusedView;
+    private View mMainView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
-        View view = inflater.inflate(R.layout.fragment_bluetooth, container, false);
-        initView(view);
-        return view;
+        mMainView = inflater.inflate(R.layout.fragment_bluetooth, container, false);
+        initView(mMainView);
+        return mMainView;
     }
 
     private void initView(View view) {
@@ -53,11 +55,36 @@ public class BluetoothFragment extends BaseFragment implements
                     break;
             }
         }
+        mFocusedView = mDeviceOneToggle;
     }
 
 
     @Override
     public void handleKeyEvent(int keyCode) {
+        if (!mFocusedView.isFocused()) {
+            mFocusedView.requestFocus();
+            return;
+        }
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                mFocusedView.clearFocus();
+                mFocusedView.setSelected(!mFocusedView.isSelected());
+                mFocusedView = mMainView.findViewById(mFocusedView.getNextFocusRightId());
+                mFocusedView.setSelected(!mFocusedView.isSelected());
+                mFocusedView.requestFocus();
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                mFocusedView.clearFocus();
+                mFocusedView.setSelected(!mFocusedView.isSelected());
+                mFocusedView = mMainView.findViewById(mFocusedView.getNextFocusLeftId());
+                mFocusedView.setSelected(!mFocusedView.isSelected());
+                mFocusedView.requestFocus();
+                break;
+            case KeyEvent.KEYCODE_ENTER:
+                ToggleButton btn = ((ToggleButton) mFocusedView);
+                btn.setChecked(!btn.isChecked());
+                break;
+        }
     }
 
     @Override

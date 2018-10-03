@@ -13,6 +13,7 @@ public class PreferencesManager {
 
     public static final String KEY_DEMO_MODE = "demo_mode";
     public static final String KEY_BSM_MAC = "bsm_mac";
+    public static final String KEY_NAVIGATION_HIDDEN = "hide_nav_bar";
     private static final String TAG = PreferencesManager.class.getSimpleName();
     private static final String PREF_NAME = MainActivity.class.getPackage().getName();
 

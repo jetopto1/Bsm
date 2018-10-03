@@ -27,8 +27,20 @@
     <dimen name="bt_setting_font_size">66.80sp</dimen>
     <dimen name="bt_setting_toggle_width">167.00dp</dimen>
     <dimen name="bt_setting_toggle_height">167.00dp</dimen>
+
+
+    <dimen name="brightness_content_font_size">41.75sp</dimen>
+    <dimen name="brightness_progress_bar_height">13.36dp</dimen>
+    <dimen name="brightness_level_margin_top">50.10dp</dimen>
+
+    <dimen name="settings_tab_width">167.00dp</dimen>
+    <dimen name="settings_title_font_size">50.10sp</dimen>
+    <dimen name="settings_title_height">66.80dp</dimen>
+
+
 <!--common value-->
     <dimen name="margin_five">8.35dp</dimen>
+    <dimen name="margin_ten">16.70dp</dimen>
     <dimen name="margin_fifteen">25.05dp</dimen>
     <dimen name="margin_thirty">50.10dp</dimen>
     <dimen name="margin_forty">66.80dp</dimen>

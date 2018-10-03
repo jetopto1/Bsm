@@ -24,7 +24,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private final String TAG_VOLUME = "Volume";
     private final String TAG_INFORMATION = "Information";
     private final String TAG_DEMO = "Demo";
-
     private FragmentTabHost mTabHost;
     private TextView mTitle;
     private ImageView mBrightness;
@@ -32,8 +31,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     private ImageView mVolume;
     private ImageView mInformation;
     private ImageView mDemo;
-
-    int mLastTab;
 
     @Nullable
     @Override
@@ -130,18 +127,22 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
-
     @Override
     public void handleKeyEvent(int keyCode) {
-        //TODO get wrong position when tab on the top.
+        int max = mTabHost.getTabWidget().getTabCount();
+        int cur = mTabHost.getCurrentTab();
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
-                if (mTabHost.getCurrentTab() == 1 && mLastTab == 1) {
-                    mTabHost.setCurrentTabByTag(TAG_DEMO);
+                if (cur > 0) {
+                    mTabHost.setCurrentTab(--cur);
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+                if (cur < max) {
+                    mTabHost.setCurrentTab(++cur);
                 }
                 break;
         }
-        mLastTab = mTabHost.getCurrentTab();
         String tag = mTabHost.getCurrentTabTag();
         Fragment frag = getChildFragmentManager().findFragmentByTag(tag);
         if (frag instanceof BaseFragment) {

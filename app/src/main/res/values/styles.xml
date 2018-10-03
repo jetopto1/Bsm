@@ -8,8 +8,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name = "NoActionBar" parent = "@android:style/Theme.Holo.Light">
-        <item name = "android:windowActionBar">false</item>
-        <item name = "android:windowNoTitle">true</item>
+    <style name="NoActionBar" parent="@android:style/Theme.Holo.Light">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="MyCheckBox" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/colorCheckBoxNormal</item>
+        <item name="colorControlActivated">@color/colorCheckBoxActivated</item>
     </style>
 </resources>

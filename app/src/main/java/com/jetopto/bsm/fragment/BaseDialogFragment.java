@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.jetopto.bsm.R;
+import com.jetopto.bsm.utils.PreferencesManager;
 import com.jetopto.bsm.utils.Utils;
 
 public abstract class BaseDialogFragment extends DialogFragment {
@@ -18,7 +19,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
     private static final String TAG = BaseDialogFragment.class.getSimpleName();
 
     protected void hideNavigationBar() {
-        if (Utils.shouldHideNavBar(getResources())) {
+        boolean hidden = PreferencesManager.getBoolean(getContext(),
+                PreferencesManager.KEY_NAVIGATION_HIDDEN, false);
+        if (Utils.shouldHideNavBar(getResources()) && hidden) {
             View decorView = getDialog().getWindow().getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }

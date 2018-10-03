@@ -8,9 +8,11 @@
     <string name="location_permission_get">Location permission granted</string>
     <string name="location_permission_failed">Location permission not granted</string>
 
-    <string name="label_bsm">BSM</string>
+
     <string name="label_bsm_one">BSM 1</string>
     <string name="label_bsm_two">BSM 2</string>
+
+    <string name="label_bsm">BSM</string>
     <string name="label_contact">Contact</string>
     <string name="label_dashboard">DashBoard</string>
     <string name="label_dvr">DVR</string>
@@ -21,6 +23,14 @@
     <string name="label_bluetooth">Bluetooth</string>
     <string name="label_brightness">Brightness</string>
     <string name="label_demo">Demo</string>
+
+    <string name="label_stream_type_ring">Ringtone \u0026 notifications</string>
+    <string name="label_stream_type_music">Music \u0026 videos</string>
+    <string name="label_stream_type_alarm">Alarms</string>
+    <string name="label_auto_brightness">Automatic brightness</string>
+    <string name="label_brightness_level">Brightness level</string>
+    <string name="label_demo_mode">Play demo video</string>
+    <string name="label_hide_nav_bar">Hide navigation bar</string>
     <string name="label_empty_contact">No contacts found.</string>
     <string name="msg_bsm_not_bind">No device bound. Stop scanning.</string>
     <string name="zero">0</string>

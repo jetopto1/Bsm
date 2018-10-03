@@ -5,14 +5,68 @@
     android:layout_height="match_parent"
     android:background="@color/colorSettingSelectedBg">
 
-    <ToggleButton
-        android:id="@+id/demo_toggle"
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_thirty"
+        android:layout_marginStart="@dimen/margin_forty"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/enable_demo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/demo_switch"
+            android:layout_alignTop="@+id/demo_switch"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="@string/label_demo_mode"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/brightness_content_font_size" />
+
+        <ToggleButton
+            android:id="@+id/demo_switch"
+            android:layout_width="@dimen/bt_setting_toggle_width"
+            android:layout_height="@dimen/bt_setting_toggle_height"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/switch_selector"
+            android:focusable="true"
+            android:gravity="center"
+            android:nextFocusLeft="@id/hide_nav_switch"
+            android:nextFocusRight="@id/hide_nav_switch"
+            android:textOff=""
+            android:textOn="" />
+
+        <TextView
+            android:id="@+id/hide_nav_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/hide_nav_switch"
+            android:layout_alignTop="@+id/hide_nav_switch"
+            android:layout_below="@+id/enable_demo"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="@string/label_hide_nav_bar"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/brightness_content_font_size" />
+
+        <ToggleButton
+            android:id="@+id/hide_nav_switch"
+            android:layout_width="@dimen/bt_setting_toggle_width"
+            android:layout_height="@dimen/bt_setting_toggle_height"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/demo_switch"
+            android:background="@drawable/switch_selector"
+            android:focusable="true"
+            android:gravity="center"
+            android:nextFocusLeft="@id/demo_switch"
+            android:nextFocusRight="@id/demo_switch"
+            android:textOff=""
+            android:textOn="" />
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

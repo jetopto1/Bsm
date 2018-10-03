@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.google.android.gms.common.util.ArrayUtils;
+import com.jetopto.bsm.utils.PreferencesManager;
 import com.jetopto.bsm.utils.Utils;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public abstract class BaseFragmentActivity extends FragmentActivity implements
 
     private static final String TAG = BaseFragmentActivity.class.getSimpleName();
 
+    //TODO move to constant
     protected final int REQUEST_PERMISSION_LOCATION = 98;
     protected final int REQUEST_PERMISSION_BLUETOOTH = 99;
     protected final int REQUEST_PERMISSION_CONTACT = 100;
@@ -86,7 +88,9 @@ public abstract class BaseFragmentActivity extends FragmentActivity implements
     }
 
     private void hideNavigationBar() {
-        if (Utils.shouldHideNavBar(getResources())) {
+        boolean hidden = PreferencesManager.getBoolean(this,
+                PreferencesManager.KEY_NAVIGATION_HIDDEN, false);
+        if (Utils.shouldHideNavBar(getResources()) && hidden) {
             View decorView = getWindow().getDecorView();
             decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }

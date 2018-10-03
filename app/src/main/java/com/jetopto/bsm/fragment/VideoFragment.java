@@ -1,5 +1,6 @@
 package com.jetopto.bsm.fragment;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -67,6 +68,12 @@ public class VideoFragment extends BaseDialogFragment {
         Uri video = Uri.parse("android.resource://" +
                 getActivity().getPackageName() + "/" + videoFile);
         videoView.setVideoURI(video);
+        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.setLooping(true);
+            }
+        });
         videoView.start();
     }
 

@@ -8,11 +8,11 @@
     <TextView
         android:id="@+id/title_view"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginStart="100dp"
+        android:layout_height="@dimen/settings_title_height"
+        android:gravity="center"
         android:text="@string/label_demo"
         android:textColor="@android:color/white"
-        android:textSize="30sp"
+        android:textSize="@dimen/settings_title_font_size"
         app:layout_constraintBottom_toTopOf="@+id/tap_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
 
             <TabWidget
                 android:id="@android:id/tabs"
-                android:layout_width="100dp"
+                android:layout_width="@dimen/settings_tab_width"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:orientation="vertical">

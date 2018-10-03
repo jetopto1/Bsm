@@ -6,18 +6,85 @@
     android:background="@color/colorSettingSelectedBg">
 
     <TextView
-        android:id="@+id/title_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Brightness"
+        android:id="@+id/auto_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:maxLines="1"
+        android:text="@string/label_auto_brightness"
         android:textColor="@android:color/white"
-        android:textSize="44sp"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="@dimen/brightness_content_font_size"
+        app:layout_constraintBottom_toBottomOf="@+id/check_box"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:nextFocusLeft="@+id/seek_bar"
+        android:nextFocusRight="@+id/seek_bar"
+        android:scaleX="1.5"
+        android:scaleY="1.5"
+        android:theme="@style/MyCheckBox"
+        app:layout_constraintBottom_toBottomOf="@+id/auto_text"
+        app:layout_constraintEnd_toEndOf="@+id/guideline5"
+        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <TextView
+        android:id="@+id/level_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/brightness_level_margin_top"
+        android:focusable="false"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/label_brightness_level"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/brightness_content_font_size"
+        app:layout_constraintStart_toStartOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/auto_text" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_ten"
+        android:focusable="true"
+        android:maxHeight="@dimen/brightness_progress_bar_height"
+        android:nextFocusLeft="@+id/check_box"
+        android:nextFocusRight="@+id/check_box"
+        android:progressDrawable="@drawable/ic_seekbar_selector"
+        android:thumb="@drawable/ic_thumb_selector"
+        android:thumbOffset="-0dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline5"
+        app:layout_constraintStart_toStartOf="@id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/level_view" />
 
 
 </android.support.constraint.ConstraintLayout>

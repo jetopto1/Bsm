@@ -20,19 +20,24 @@
             android:id="@+id/bsm_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/bt_setting_font_size"
-            android:gravity="center"
-            android:layout_alignTop="@+id/switch_one"
             android:layout_alignBottom="@+id/switch_one"
-            android:text="@string/label_bsm_one" />
+            android:layout_alignTop="@+id/switch_one"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="@string/label_bsm_one"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/bt_setting_font_size" />
 
         <ToggleButton
             android:id="@+id/switch_one"
             android:layout_width="@dimen/bt_setting_toggle_width"
             android:layout_height="@dimen/bt_setting_toggle_height"
             android:layout_alignParentEnd="true"
-            android:gravity="center"
             android:background="@drawable/switch_selector"
+            android:focusable="true"
+            android:gravity="center"
+            android:nextFocusLeft="@id/switch_two"
+            android:nextFocusRight="@id/switch_two"
             android:textOff=""
             android:textOn="" />
 
@@ -40,11 +45,13 @@
             android:id="@+id/bsm_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/bsm_one"
-            android:gravity="center"
-            android:text="@string/label_bsm_two"
             android:layout_alignBottom="@+id/switch_two"
             android:layout_alignTop="@+id/switch_two"
+            android:layout_below="@+id/bsm_one"
+            android:focusable="false"
+            android:gravity="center"
+            android:text="@string/label_bsm_two"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/bt_setting_font_size" />
 
         <ToggleButton
@@ -53,8 +60,11 @@
             android:layout_height="@dimen/bt_setting_toggle_height"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/switch_one"
-            android:gravity="center"
             android:background="@drawable/switch_selector"
+            android:focusable="true"
+            android:gravity="center"
+            android:nextFocusLeft="@id/switch_one"
+            android:nextFocusRight="@id/switch_one"
             android:textOff=""
             android:textOn="" />
     </RelativeLayout>

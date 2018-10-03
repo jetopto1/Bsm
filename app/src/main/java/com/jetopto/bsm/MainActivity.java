@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -31,6 +33,9 @@ import com.jetopto.bsm.presenter.interfaces.MainMvpView;
 import com.jetopto.bsm.utils.Constant;
 import com.jetopto.bsm.utils.PreferencesManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,15 +73,6 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
 //        this.startService(beaconScanIntent);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (null != mPresenter) {
-            mPresenter.detachView();
-            mPresenter = null;
-        }
-//        stopService(beaconScanIntent);
-    }
 
     @Override
     public void onBackPressed() {
@@ -209,7 +205,7 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
         Fragment f = mPagerAdapter.getItem(mViewPager.getCurrentItem());
         if (f instanceof BaseFragment) {
             ((BaseFragment) f).handleKeyEvent(keyCode);
-            return false;
+            return true;
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -218,9 +214,9 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (KeyEvent.KEYCODE_DPAD_LEFT == keyCode && event.getRepeatCount() == 15) {
             onBackPressed();
-            return false;
+            return true;
         }
-        return super.onKeyDown(keyCode, event);
+        return true;
     }
 
     @Override
@@ -235,16 +231,70 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     @Override
     protected void onPause() {
         super.onPause();
-        sendProjectorIntent(false);
+        Log.i(TAG, "onPause");
         mPresenter.unbindBsmService();
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
+        sendProjectorIntent(false);
     }
 
-    private void sendProjectorIntent(boolean enable) {
-        Intent intent = new Intent("tmj.setting.projector.onoff");
-        intent.putExtra("projector_onoff", enable);
-        sendBroadcast(intent);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy");
+        if (null != mPresenter) {
+            mPresenter.detachView();
+            mPresenter = null;
+        }
+//        stopService(beaconScanIntent);
+    }
+
+    private void sendProjectorIntent(final boolean enable) {
+
+        final String command1 = "/system/bin/sh /system/bin/projector_on.sh";
+        final String command2 = "/system/bin/sh /system/bin/projector_off.sh";
+        Log.i(TAG, "sendProjectorIntent " + enable);
+//
+        if (Build.PRODUCT.equals("rk312x")) {
+            if (enable) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Log.d(TAG, "command1" + command1);
+                            Process process = Runtime.getRuntime().exec(command1);
+                            InputStreamReader reader = new InputStreamReader(process.getInputStream());
+                            BufferedReader bufferedReader = new BufferedReader(reader);
+                            int numRead;
+                            char[] buffer = new char[5000];
+                            StringBuffer commandOutput = new StringBuffer();
+                            while ((numRead = bufferedReader.read(buffer)) > 0) {
+                                commandOutput.append(buffer, 0, numRead);
+                            }
+                            bufferedReader.close();
+                            process.waitFor();
+                            Log.d(TAG, "Set USER_ROTATION, 1");
+                            Settings.System.putInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0);
+                            Settings.System.putInt(getContentResolver(), Settings.System.USER_ROTATION, 1);
+                            Log.d(TAG, "commandOutput.toString(): " + commandOutput.toString());
+                            //				return commandOutput.toString();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.d(TAG, "e.fillInStackTrace(): " + e.fillInStackTrace());
+                            throw new RuntimeException(e);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            Log.d(TAG, "e.fillInStackTrace(): " + e.fillInStackTrace());
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }).start();
+            } else {
+                Intent intent = new Intent("tmj.setting.projector.onoff");
+                intent.putExtra("projector_onoff", enable);
+                sendBroadcast(intent);
+            }
+        }
     }
 
     @Override
