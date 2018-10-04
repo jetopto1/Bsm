@@ -32,6 +32,8 @@
     <string name="label_demo_mode">Play demo video</string>
     <string name="label_hide_nav_bar">Hide navigation bar</string>
     <string name="label_empty_contact">No contacts found.</string>
+    <string name="label_app_version">APP ver: \u0020 %1$s</string>
+    <string name="label_bsm_version">BSM ver: \u0020 %1$s</string>
     <string name="msg_bsm_not_bind">No device bound. Stop scanning.</string>
     <string name="zero">0</string>
     <string name="kmh">km/h</string>

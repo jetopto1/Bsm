@@ -6,12 +6,15 @@ android {
         applicationId "com.jetopto.bsm"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode gitVersionCode()
+        versionName getDate()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -43,4 +46,13 @@ task dimensionPrebuildTask(type: Exec) {
 }
 
 preBuild.dependsOn dimensionPrebuildTask
+
+def getDate() {
+    return new Date().format('yyyy.MM.dd')
+}
+
+def gitVersionCode() {
+    def cmd = 'git rev-list HEAD --first-parent --count'
+    cmd.execute().text.trim().toInteger()
+}
 

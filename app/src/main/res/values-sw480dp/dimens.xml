@@ -38,6 +38,8 @@
     <dimen name="settings_title_height">53.20dp</dimen>
 
 
+    <dimen name="information_content_font_size">33.25sp</dimen>
+
 <!--common value-->
     <dimen name="margin_five">6.65dp</dimen>
     <dimen name="margin_ten">13.30dp</dimen>
