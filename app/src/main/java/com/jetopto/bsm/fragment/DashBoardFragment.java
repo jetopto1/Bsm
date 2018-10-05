@@ -24,56 +24,6 @@ public class DashBoardFragment extends Fragment {
     private TextView mHundredView;
     private TextView mTenView;
     private TextView mUnitView;
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        Log.i(TAG, "onCreateView");
-        View view = inflater.inflate(R.layout.fragment_dash_board, container, false);
-        initView(view);
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        /* TODO move data fetching function to presenter
-         *  TODO this phase is for demo
-         */
-        testData();
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        if (hidden) {
-            onPause();
-        } else {
-            onResume();
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause");
-        if (null != mHandlerThread) {
-            mHandlerThread.interrupt();
-            mHandler.removeCallbacks(mRunnable);
-            mHandlerThread.quit();
-        }
-    }
-
-    private void initView(View view) {
-        mHundredView = view.findViewById(R.id.hundred);
-        mTenView = view.findViewById(R.id.ten);
-        mUnitView = view.findViewById(R.id.unit);
-        Typeface ty = Typeface.createFromAsset(getActivity().getAssets(), "fonts/DS-DIGI.TTF");
-        mHundredView.setTypeface(ty);
-        mTenView.setTypeface(ty);
-        mUnitView.setTypeface(ty);
-    }
-
     Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
@@ -93,11 +43,70 @@ public class DashBoardFragment extends Fragment {
         }
     };
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
+        View view = inflater.inflate(R.layout.fragment_dash_board, container, false);
+        initView(view);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        /* TODO move data fetching function to presenter
+         *  TODO this phase is for demo
+         */
+        if (!isHidden()) {
+            testData();
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (hidden) {
+            onPause();
+        } else {
+            onResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopTestingThread();
+    }
+
+    private void initView(View view) {
+        mHundredView = view.findViewById(R.id.hundred);
+        mTenView = view.findViewById(R.id.ten);
+        mUnitView = view.findViewById(R.id.unit);
+        Typeface ty = Typeface.createFromAsset(getActivity().getAssets(), "fonts/DS-DIGI.TTF");
+        mHundredView.setTypeface(ty);
+        mTenView.setTypeface(ty);
+        mUnitView.setTypeface(ty);
+    }
+
     private void testData() {
+        if (null != mHandlerThread) {
+            stopTestingThread();
+        }
         mHandlerThread = new HandlerThread("Sheldon");
         mHandlerThread.start();
         mHandler = new Handler(mHandlerThread.getLooper());
         mHandler.post(mRunnable);
+    }
+
+    private void stopTestingThread() {
+        if (null != mHandlerThread) {
+            mHandlerThread.interrupt();
+            mHandler.removeCallbacks(mRunnable);
+            mHandlerThread.quit();
+            mHandlerThread = null;
+            mHandler = null;
+        }
     }
 
     private void afterSpeedUp() {

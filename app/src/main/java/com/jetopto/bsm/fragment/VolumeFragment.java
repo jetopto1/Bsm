@@ -45,7 +45,9 @@ public class VolumeFragment extends BaseFragment implements SeekBar.OnSeekBarCha
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "onDestroy");
-        mPresenter.detachView();
+        if (null != mPresenter) {
+            mPresenter.detachView();
+        }
     }
 
     @Override

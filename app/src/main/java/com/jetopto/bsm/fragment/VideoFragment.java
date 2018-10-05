@@ -23,6 +23,9 @@ public class VideoFragment extends BaseDialogFragment {
     private static final String TAG = VideoFragment.class.getSimpleName();
 
     private int mVideo;
+    private int mLastPosition;
+
+    private VideoView mVideoView;
 
     public static VideoFragment newInstance(int video) {
         Log.i(TAG, "video: " + video);
@@ -51,8 +54,32 @@ public class VideoFragment extends BaseDialogFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mVideoView.seekTo(mLastPosition);
+        mVideoView.start();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mVideoView.pause();
+        mLastPosition = mVideoView.getCurrentPosition();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mVideoView = null;
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        playVideo();
+    }
+
+    private void playVideo() {
         int videoFile;
         switch (mVideo) {
             case Constant.PLAY_NAVIGATION_FILE:
@@ -64,17 +91,17 @@ public class VideoFragment extends BaseDialogFragment {
                 break;
 
         }
-        VideoView videoView = getView().findViewById(R.id.video_view);
+        mVideoView = getView().findViewById(R.id.video_view);
         Uri video = Uri.parse("android.resource://" +
                 getActivity().getPackageName() + "/" + videoFile);
-        videoView.setVideoURI(video);
-        videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        mVideoView.setVideoURI(video);
+        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.setLooping(true);
             }
         });
-        videoView.start();
+        mVideoView.start();
     }
 
     @Override

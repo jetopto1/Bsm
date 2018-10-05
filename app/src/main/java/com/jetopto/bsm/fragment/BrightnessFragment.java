@@ -45,7 +45,9 @@ public class BrightnessFragment extends BaseFragment implements ContentObserveMv
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mPresenter.detachView();
+        if (null != mPresenter) {
+            mPresenter.detachView();
+        }
     }
 
     private void initView(View view) {
