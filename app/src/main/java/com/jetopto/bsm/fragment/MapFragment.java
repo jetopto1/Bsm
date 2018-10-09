@@ -59,6 +59,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, Locatio
     public void onResume() {
         super.onResume();
         Log.i(TAG, "onResume");
+        if (null == mapFragment && ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            MapsInitializer.initialize(getActivity());
+            updateMapView();
+        }
     }
 
     @Override
