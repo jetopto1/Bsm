@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.jetopto.bsm.custom.view.CustomViewPager;
@@ -68,7 +69,7 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
             Toast.makeText(getBaseContext(), "BLE supported", Toast.LENGTH_SHORT).show();
 
         }
-
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 //        beaconScanIntent = new Intent(this, SensorMonitorService.class);
 //        this.startService(beaconScanIntent);
     }
