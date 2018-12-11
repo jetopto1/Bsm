@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sensor_margin_start">19.62dp</dimen>
+    <dimen name="sensor_status_width">38.15dp</dimen>
+    <dimen name="category_gridview_padding_edge">6.54dp</dimen>
+    <dimen name="category_margin_top">6.54dp</dimen>
+    <dimen name="category_padding_top">3.27dp</dimen>
+    <dimen name="category_font_size">26.16sp</dimen>
+    <dimen name="category_card_height">185.30dp</dimen>
+    <dimen name="category_icon_width">109.00dp</dimen>
+    <dimen name="category_icon_height">109.00dp</dimen>
+
+    <dimen name="contact_icon_width">65.40dp</dimen>
+    <dimen name="contact_icon_height">65.40dp</dimen>
+    <dimen name="contact_phone_width">43.60dp</dimen>
+    <dimen name="contact_phone_height">43.60dp</dimen>
+    <dimen name="contact_margin_parent_horizontal">21.80dp</dimen>
+    <dimen name="contact_margin_thumb">10.90dp</dimen>
+    <dimen name="contact_empty_font_size">43.60sp</dimen>
+
+    <dimen name="dash_line_width">468.70dp</dimen>
+    <dimen name="dash_line_height">4.36dp</dimen>
+    <dimen name="dash_speed_font_size">250.70sp</dimen>
+    <dimen name="dash_kmh_font_size">32.70sp</dimen>
+
+
+    <dimen name="bt_setting_font_size">43.60sp</dimen>
+    <dimen name="bt_setting_toggle_width">109.00dp</dimen>
+    <dimen name="bt_setting_toggle_height">109.00dp</dimen>
+
+
+    <dimen name="brightness_content_font_size">27.25sp</dimen>
+    <dimen name="brightness_progress_bar_height">8.72dp</dimen>
+    <dimen name="brightness_level_margin_top">32.70dp</dimen>
+
+    <dimen name="settings_tab_width">109.00dp</dimen>
+    <dimen name="settings_title_font_size">32.70sp</dimen>
+    <dimen name="settings_title_height">43.60dp</dimen>
+
+
+    <dimen name="information_content_font_size">27.25sp</dimen>
+
+<!--common value-->
+    <dimen name="margin_five">5.45dp</dimen>
+    <dimen name="margin_ten">10.90dp</dimen>
+    <dimen name="margin_fifteen">16.35dp</dimen>
+    <dimen name="margin_thirty">32.70dp</dimen>
+    <dimen name="margin_forty">43.60dp</dimen>
+    <dimen name="margin_sixty">65.40dp</dimen>
+    <dimen name="margin_seventy">76.30dp</dimen>
+</resources>

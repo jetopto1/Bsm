@@ -15,7 +15,7 @@ if [ ! -f "$1" ]; then
 fi
 
 #add supported dp here
-support_dp_arr=(480 600 720 800 920 1080)
+support_dp_arr=(392 480 600 720 800 920 1080)
 root=`pwd`
 file_name=dimens.xml
 default_space="    "

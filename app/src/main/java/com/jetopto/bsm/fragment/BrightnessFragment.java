@@ -143,6 +143,10 @@ public class BrightnessFragment extends BaseFragment implements ContentObserveMv
     }
 
     private void setBrightness(int brightness) {
+        if ( null == getActivity()) {
+            Log.e(TAG,"Activity " + getActivity());
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(getActivity())) {
             startManageWriteSetting();
         } else {

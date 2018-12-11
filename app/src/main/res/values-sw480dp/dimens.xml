@@ -6,7 +6,7 @@
     <dimen name="category_margin_top">7.98dp</dimen>
     <dimen name="category_padding_top">3.99dp</dimen>
     <dimen name="category_font_size">31.92sp</dimen>
-    <dimen name="category_card_height">220.78dp</dimen>
+    <dimen name="category_card_height">226.10dp</dimen>
     <dimen name="category_icon_width">133.00dp</dimen>
     <dimen name="category_icon_height">133.00dp</dimen>
 

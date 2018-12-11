@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -223,6 +224,10 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     @Override
     protected void onResume() {
         super.onResume();
+
+        Configuration config = getResources().getConfiguration();
+
+        Log.i(TAG, "SW: " +  config.smallestScreenWidthDp);
         mPresenter.bindBsmService();
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
