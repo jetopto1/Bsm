@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -59,6 +60,11 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (BsmApplication.isReverse) {
+            View parent = findViewById(R.id.main_parent);
+            parent.setScaleY(-1);
+            parent.onRtlPropertiesChanged(View.LAYOUT_DIRECTION_RTL);
+        }
         initView();
         mPresenter = new MainPresenterImpl();
         mPresenter.attachView(getApplicationContext(), this);
@@ -333,6 +339,8 @@ public class MainActivity extends BaseFragmentActivity implements MainMvpView,
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(PreferencesManager.KEY_BSM_MAC)) {
             mPresenter.bindBsmService();
+        } else if (key.equals(PreferencesManager.KEY_INVERSE_LAYOUT)) {
+            BsmApplication.onSharedPreferenceChanged(sharedPreferences,  key);
         }
     }
 

@@ -14,10 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jetopto.bsm.BsmApplication;
 import com.jetopto.bsm.R;
 import com.jetopto.bsm.custom.adapter.ContactsAdapter;
 import com.jetopto.bsm.utils.classes.UserContacts;
@@ -46,6 +48,10 @@ public class ContactsFragment extends BaseDialogFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View mMainView = inflater.inflate(R.layout.fragment_contacts, null);
+        if (BsmApplication.isReverse) {
+            mMainView.setScaleY(-1);
+            mMainView.onRtlPropertiesChanged(View.LAYOUT_DIRECTION_RTL);
+        }
         setupSize();
         getContactList();
         initView(mMainView);

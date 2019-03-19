@@ -1,5 +1,7 @@
 package com.jetopto.bsm.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
+import com.jetopto.bsm.BsmApplication;
+import com.jetopto.bsm.MainActivity;
 import com.jetopto.bsm.R;
 import com.jetopto.bsm.utils.PreferencesManager;
 
@@ -19,38 +23,54 @@ public class DemoFragment extends BaseFragment {
 
     private ToggleButton mDemoButton;
     private ToggleButton mNavButton;
+    private ToggleButton mInvButton;
     private View mFocusedView;
     private View mMainView;
+    private Context mContext;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
         mMainView = inflater.inflate(R.layout.fragment_demo, container, false);
+        mContext = BsmApplication.getAppContext().getApplicationContext();
         initView(mMainView);
         return mMainView;
     }
 
     private void initView(View view) {
         mDemoButton = view.findViewById(R.id.demo_switch);
-        boolean demoMode = PreferencesManager.getBoolean(getContext(),
+        boolean demoMode = PreferencesManager.getBoolean(mContext,
                 PreferencesManager.KEY_DEMO_MODE, false);
         mDemoButton.setChecked(demoMode);
         mDemoButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PreferencesManager.put(getContext(), PreferencesManager.KEY_DEMO_MODE, isChecked);
+                PreferencesManager.put(mContext, PreferencesManager.KEY_DEMO_MODE, isChecked);
             }
         });
 
         mNavButton = view.findViewById(R.id.hide_nav_switch);
-        boolean hidden = PreferencesManager.getBoolean(getContext(),
+        boolean hidden = PreferencesManager.getBoolean(mContext,
                 PreferencesManager.KEY_NAVIGATION_HIDDEN, false);
         mNavButton.setChecked(hidden);
         mNavButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                PreferencesManager.put(getContext(), PreferencesManager.KEY_NAVIGATION_HIDDEN, isChecked);
+                PreferencesManager.put(mContext, PreferencesManager.KEY_NAVIGATION_HIDDEN, isChecked);
+            }
+        });
+
+        mInvButton = view.findViewById(R.id.upside_down_switch);
+        boolean inverse = PreferencesManager.getBoolean(mContext, PreferencesManager.KEY_INVERSE_LAYOUT, false);
+        mInvButton.setChecked(inverse);
+        mInvButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PreferencesManager.put(mContext, PreferencesManager.KEY_INVERSE_LAYOUT, isChecked);
+                Intent i = new Intent(mContext, MainActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
             }
         });
         mFocusedView = mDemoButton;

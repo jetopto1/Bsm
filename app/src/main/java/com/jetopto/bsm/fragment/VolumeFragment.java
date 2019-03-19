@@ -1,9 +1,13 @@
 package com.jetopto.bsm.fragment;
 
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -14,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import com.jetopto.bsm.BsmApplication;
 import com.jetopto.bsm.R;
 import com.jetopto.bsm.presenter.ContentObservePresenterImpl;
 import com.jetopto.bsm.presenter.interfaces.ContentObserveMvpView;
@@ -99,6 +104,13 @@ public class VolumeFragment extends BaseFragment implements SeekBar.OnSeekBarCha
                 setVolume(mAudioManager, AudioManager.STREAM_MUSIC, progress);
                 break;
             case R.id.ring_seek_bar:
+                NotificationManager notificationManager = (NotificationManager) BsmApplication.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
+                        && !notificationManager.isNotificationPolicyAccessGranted()) {
+                    Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+                    startActivity(intent);
+                    return;
+                }
                 setVolume(mAudioManager, AudioManager.STREAM_RING, progress);
                 break;
         }
